@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finans Hesaplayıcı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .calculator-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: #2c2c2c;
+            border: none;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #2196F3;
+        }
+
+        .calculator-section {
+            display: none;
+        }
+
+        .calculator-section.active {
+            display: block;
+        }
+
+        .input-group {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            background: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .calculate-btn:hover {
+            background: #45a049;
+        }
+
+        .calculate-btn:active {
+            transform: scale(0.98);
+        }
+
+        .result-section {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4CAF50;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            margin: 8px 0;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+
+        .result-label {
+            color: #aaa;
+        }
+
+        .result-value {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .result-highlight {
+            background: #2196F3;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .result-highlight-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-highlight-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .amortization-table {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+
+        th {
+            background: #1a1a1a;
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        tr:hover {
+            background: #2a2a2a;
+        }
+
+        .info-box {
+            background: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .result-highlight-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="calculator.html" class="back-btn">← Hesap Makinesi</a>
+        <div class="header-title">💰 Finans Hesaplayıcı</div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <div class="calculator-tabs">
+            <button class="tab-btn active" onclick="showTab('loan')">Kredi</button>
+            <button class="tab-btn" onclick="showTab('investment')">Yatırım</button>
+            <button class="tab-btn" onclick="showTab('mortgage')">Mortgage</button>
+            <button class="tab-btn" onclick="showTab('savings')">Tasarruf</button>
+            <button class="tab-btn" onclick="showTab('profit')">Kar/Zarar</button>
+            <button class="tab-btn" onclick="showTab('discount')">İndirim</button>
+        </div>
+
+        <!-- Kredi Hesaplayıcı -->
+        <div id="loan" class="calculator-section active">
+            <div class="input-group">
+                <div class="input-label">Kredi Tutarı (₺)</div>
+                <input type="number" class="input-field" id="loanAmount" value="100000">
+                
+                <div class="input-label">Yıllık Faiz Oranı (%)</div>
+                <input type="number" class="input-field" id="loanRate" value="15" step="0.1">
+                
+                <div class="input-label">Vade (Ay)</div>
+                <input type="number" class="input-field" id="loanTerm" value="36">
+                
+                <button class="calculate-btn" onclick="calculateLoan()">Hesapla</button>
+            </div>
+
+            <div id="loanResult" style="display:none;">
+                <div class="result-highlight">
+                    <div class="result-highlight-value" id="loanMonthly">0 ₺</div>
+                    <div class="result-highlight-label">Aylık Ödeme</div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-title">Detaylar</div>
+                    <div class="result-item">
+                        <span class="result-label">Toplam Ödeme</span>
+                        <span class="result-value" id="loanTotal">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Toplam Faiz</span>
+                        <span class="result-value" id="loanInterest">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Aylık Faiz Oranı</span>
+                        <span class="result-value" id="loanMonthlyRate">0%</span>
+                    </div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-title">Ödeme Planı (İlk 12 Ay)</div>
+                    <div class="amortization-table" id="loanSchedule"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Yatırım Hesaplayıcı -->
+        <div id="investment" class="calculator-section">
+            <div class="input-group">
+                <div class="input-label">Başlangıç Tutarı (₺)</div>
+                <input type="number" class="input-field" id="investInitial" value="10000">
+                
+                <div class="input-label">Aylık Katkı (₺)</div>
+                <input type="number" class="input-field" id="investMonthly" value="1000">
+                
+                <div class="input-label">Yıllık Getiri Oranı (%)</div>
+                <input type="number" class="input-field" id="investRate" value="10" step="0.1">
+                
+                <div class="input-label">Süre (Yıl)</div>
+                <input type="number" class="input-field" id="investYears" value="10">
+                
+                <button class="calculate-btn" onclick="calculateInvestment()">Hesapla</button>
+            </div>
+
+            <div id="investResult" style="display:none;">
+                <div class="result-highlight">
+                    <div class="result-highlight-value" id="investFuture">0 ₺</div>
+                    <div class="result-highlight-label">Gelecek Değer</div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-title">Detaylar</div>
+                    <div class="result-item">
+                        <span class="result-label">Toplam Yatırım</span>
+                        <span class="result-value" id="investTotal">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Toplam Kazanç</span>
+                        <span class="result-value" id="investProfit">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">ROI</span>
+                        <span class="result-value" id="investROI">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mortgage Hesaplayıcı -->
+        <div id="mortgage" class="calculator-section">
+            <div class="input-group">
+                <div class="input-label">Ev Fiyatı (₺)</div>
+                <input type="number" class="input-field" id="mortgagePrice" value="1000000">
+                
+                <div class="input-label">Peşinat (%)</div>
+                <input type="number" class="input-field" id="mortgageDown" value="20">
+                
+                <div class="input-label">Yıllık Faiz Oranı (%)</div>
+                <input type="number" class="input-field" id="mortgageRate" value="12" step="0.1">
+                
+                <div class="input-label">Vade (Yıl)</div>
+                <input type="number" class="input-field" id="mortgageTerm" value="15">
+                
+                <button class="calculate-btn" onclick="calculateMortgage()">Hesapla</button>
+            </div>
+
+            <div id="mortgageResult" style="display:none;">
+                <div class="result-highlight">
+                    <div class="result-highlight-value" id="mortgageMonthly">0 ₺</div>
+                    <div class="result-highlight-label">Aylık Ödeme</div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-title">Detaylar</div>
+                    <div class="result-item">
+                        <span class="result-label">Peşinat Tutarı</span>
+                        <span class="result-value" id="mortgageDownAmount">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Kredi Tutarı</span>
+                        <span class="result-value" id="mortgageLoan">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Toplam Ödeme</span>
+                        <span class="result-value" id="mortgageTotal">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Toplam Faiz</span>
+                        <span class="result-value" id="mortgageInterest">0 ₺</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tasarruf Hesaplayıcı -->
+        <div id="savings" class="calculator-section">
+            <div class="input-group">
+                <div class="input-label">Hedef Tutar (₺)</div>
+                <input type="number" class="input-field" id="savingsGoal" value="100000">
+                
+                <div class="input-label">Başlangıç Tutarı (₺)</div>
+                <input type="number" class="input-field" id="savingsInitial" value="10000">
+                
+                <div class="input-label">Yıllık Faiz Oranı (%)</div>
+                <input type="number" class="input-field" id="savingsRate" value="8" step="0.1">
+                
+                <div class="input-label">Süre (Yıl)</div>
+                <input type="number" class="input-field" id="savingsYears" value="5">
+                
+                <button class="calculate-btn" onclick="calculateSavings()">Hesapla</button>
+            </div>
+
+            <div id="savingsResult" style="display:none;">
+                <div class="result-highlight">
+                    <div class="result-highlight-value" id="savingsMonthly">0 ₺</div>
+                    <div class="result-highlight-label">Aylık Tasarruf Gereksinimi</div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-title">Detaylar</div>
+                    <div class="result-item">
+                        <span class="result-label">Toplam Katkı</span>
+                        <span class="result-value" id="savingsContribution">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Faiz Kazancı</span>
+                        <span class="result-value" id="savingsInterest">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Nihai Tutar</span>
+                        <span class="result-value" id="savingsFinal">0 ₺</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kar/Zarar Hesaplayıcı -->
+        <div id="profit" class="calculator-section">
+            <div class="input-group">
+                <div class="input-label">Maliyet (₺)</div>
+                <input type="number" class="input-field" id="profitCost" value="1000">
+                
+                <div class="input-label">Satış Fiyatı (₺)</div>
+                <input type="number" class="input-field" id="profitSale" value="1500">
+                
+                <div class="input-label">Miktar</div>
+                <input type="number" class="input-field" id="profitQuantity" value="100">
+                
+                <button class="calculate-btn" onclick="calculateProfit()">Hesapla</button>
+            </div>
+
+            <div id="profitResult" style="display:none;">
+                <div class="result-highlight">
+                    <div class="result-highlight-value" id="profitTotal">0 ₺</div>
+                    <div class="result-highlight-label">Toplam Kar</div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-title">Detaylar</div>
+                    <div class="result-item">
+                        <span class="result-label">Birim Kar</span>
+                        <span class="result-value" id="profitUnit">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Kar Marjı</span>
+                        <span class="result-value" id="profitMargin">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Toplam Maliyet</span>
+                        <span class="result-value" id="profitTotalCost">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Toplam Gelir</span>
+                        <span class="result-value" id="profitRevenue">0 ₺</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- İndirim Hesaplayıcı -->
+        <div id="discount" class="calculator-section">
+            <div class="input-group">
+                <div class="input-label">Orijinal Fiyat (₺)</div>
+                <input type="number" class="input-field" id="discountOriginal" value="1000">
+                
+                <div class="input-label">İndirim Oranı (%)</div>
+                <input type="number" class="input-field" id="discountRate" value="25">
+                
+                <button class="calculate-btn" onclick="calculateDiscount()">Hesapla</button>
+            </div>
+
+            <div id="discountResult" style="display:none;">
+                <div class="result-highlight">
+                    <div class="result-highlight-value" id="discountFinal">0 ₺</div>
+                    <div class="result-highlight-label">İndirimli Fiyat</div>
+                </div>
+
+                <div class="result-section">
+                    <div class="result-title">Detaylar</div>
+                    <div class="result-item">
+                        <span class="result-label">İndirim Tutarı</span>
+                        <span class="result-value" id="discountAmount">0 ₺</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Tasarruf</span>
+                        <span class="result-value" id="discountSavings">0 ₺</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <strong>💡 Bilgi:</strong> Tüm hesaplamalar yaklaşık değerlerdir. Gerçek finansal kararlar için profesyonel danışmanlık alınız.
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            document.querySelectorAll('.calculator-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value) + ' ₺';
+        }
+
+        function calculateLoan() {
+            const principal = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('loanRate').value);
+            const months = parseInt(document.getElementById('loanTerm').value);
+
+            const monthlyRate = annualRate / 100 / 12;
+            const monthlyPayment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                                  (Math.pow(1 + monthlyRate, months) - 1);
+            
+            const totalPayment = monthlyPayment * months;
+            const totalInterest = totalPayment - principal;
+
+            document.getElementById('loanMonthly').textContent = formatCurrency(monthlyPayment);
+            document.getElementById('loanTotal').textContent = formatCurrency(totalPayment);
+            document.getElementById('loanInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('loanMonthlyRate').textContent = (monthlyRate * 100).toFixed(4) + '%';
+
+            // Ödeme planı
+            let balance = principal;
+            let scheduleHTML = '<table><tr><th>Ay</th><th>Ödeme</th><th>Anapara</th><th>Faiz</th><th>Kalan</th></tr>';
+            
+            for (let i = 1; i <= Math.min(12, months); i++) {
+                const interestPayment = balance * monthlyRate;
+                const principalPayment = monthlyPayment - interestPayment;
+                balance -= principalPayment;
+
+                scheduleHTML += `<tr>
+                    <td>${i}</td>
+                    <td>${formatCurrency(monthlyPayment)}</td>
+                    <td>${formatCurrency(principalPayment)}</td>
+                    <td>${formatCurrency(interestPayment)}</td>
+                    <td>${formatCurrency(balance)}</td>
+                </tr>`;
+            }
+            scheduleHTML += '</table>';
+            
+            document.getElementById('loanSchedule').innerHTML = scheduleHTML;
+            document.getElementById('loanResult').style.display = 'block';
+        }
+
+        function calculateInvestment() {
+            const initial = parseFloat(document.getElementById('investInitial').value);
+            const monthly = parseFloat(document.getElementById('investMonthly').value);
+            const annualRate = parseFloat(document.getElementById('investRate').value);
+            const years = parseInt(document.getElementById('investYears').value);
+
+            const monthlyRate = annualRate / 100 / 12;
+            const months = years * 12;
+
+            const futureValue = initial * Math.pow(1 + monthlyRate, months) +
+                              monthly * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+            
+            const totalInvested = initial + (monthly * months);
+            const totalProfit = futureValue - totalInvested;
+            const roi = (totalProfit / totalInvested) * 100;
+
+            document.getElementById('investFuture').textContent = formatCurrency(futureValue);
+            document.getElementById('investTotal').textContent = formatCurrency(totalInvested);
+            document.getElementById('investProfit').textContent = formatCurrency(totalProfit);
+            document.getElementById('investROI').textContent = roi.toFixed(2) + '%';
+            document.getElementById('investResult').style.display = 'block';
+        }
+
+        function calculateMortgage() {
+            const price = parseFloat(document.getElementById('mortgagePrice').value);
+            const downPercent = parseFloat(document.getElementById('mortgageDown').value);
+            const annualRate = parseFloat(document.getElementById('mortgageRate').value);
+            const years = parseInt(document.getElementById('mortgageTerm').value);
+
+            const downPayment = price * (downPercent / 100);
+            const loanAmount = price - downPayment;
+            const monthlyRate = annualRate / 100 / 12;
+            const months = years * 12;
+
+            const monthlyPayment = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, months)) / 
+                                  (Math.pow(1 + monthlyRate, months) - 1);
+            
+            const totalPayment = monthlyPayment * months;
+            const totalInterest = totalPayment - loanAmount;
+
+            document.getElementById('mortgageMonthly').textContent = formatCurrency(monthlyPayment);
+            document.getElementById('mortgageDownAmount').textContent = formatCurrency(downPayment);
+            document.getElementById('mortgageLoan').textContent = formatCurrency(loanAmount);
+            document.getElementById('mortgageTotal').textContent = formatCurrency(totalPayment);
+            document.getElementById('mortgageInterest').textContent = formatCurrency(totalInterest);
+            document.getElementById('mortgageResult').style.display = 'block';
+        }
+
+        function calculateSavings() {
+            const goal = parseFloat(document.getElementById('savingsGoal').value);
+            const initial = parseFloat(document.getElementById('savingsInitial').value);
+            const annualRate = parseFloat(document.getElementById('savingsRate').value);
+            const years = parseInt(document.getElementById('savingsYears').value);
+
+            const monthlyRate = annualRate / 100 / 12;
+            const months = years * 12;
+
+            const monthlyContribution = (goal - initial * Math.pow(1 + monthlyRate, months)) / 
+                                       ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+
+            const totalContribution = initial + (monthlyContribution * months);
+            const interestEarned = goal - totalContribution;
+
+            document.getElementById('savingsMonthly').textContent = formatCurrency(monthlyContribution);
+            document.getElementById('savingsContribution').textContent = formatCurrency(totalContribution);
+            document.getElementById('savingsInterest').textContent = formatCurrency(interestEarned);
+            document.getElementById('savingsFinal').textContent = formatCurrency(goal);
+            document.getElementById('savingsResult').style.display = 'block';
+        }
+
+        function calculateProfit() {
+            const cost = parseFloat(document.getElementById('profitCost').value);
+            const sale = parseFloat(document.getElementById('profitSale').value);
+            const quantity = parseInt(document.getElementById('profitQuantity').value);
+
+            const unitProfit = sale - cost;
+            const totalProfit = unitProfit * quantity;
+            const margin = (unitProfit / sale) * 100;
+            const totalCost = cost * quantity;
+            const revenue = sale * quantity;
+
+            document.getElementById('profitTotal').textContent = formatCurrency(totalProfit);
+            document.getElementById('profitUnit').textContent = formatCurrency(unitProfit);
+            document.getElementById('profitMargin').textContent = margin.toFixed(2) + '%';
+            document.getElementById('profitTotalCost').textContent = formatCurrency(totalCost);
+            document.getElementById('profitRevenue').textContent = formatCurrency(revenue);
+            document.getElementById('profitResult').style.display = 'block';
+        }
+
+        function calculateDiscount() {
+            const original = parseFloat(document.getElementById('discountOriginal').value);
+            const rate = parseFloat(document.getElementById('discountRate').value);
+
+            const discountAmount = original * (rate / 100);
+            const finalPrice = original - discountAmount;
+
+            document.getElementById('discountFinal').textContent = formatCurrency(finalPrice);
+            document.getElementById('discountAmount').textContent = formatCurrency(discountAmount);
+            document.getElementById('discountSavings').textContent = formatCurrency(discountAmount);
+            document.getElementById('discountResult').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

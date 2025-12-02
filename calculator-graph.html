@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grafik Çizimi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .input-section {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .function-input {
+            flex: 1;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .function-input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .add-btn {
+            background: #4CAF50;
+            border: none;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .function-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .function-tag {
+            background: #444;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .function-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+
+        .remove-btn {
+            background: #f44336;
+            border: none;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .canvas-container {
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        #graphCanvas {
+            width: 100%;
+            height: 500px;
+            display: block;
+            cursor: crosshair;
+        }
+
+        .coordinates {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: monospace;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .control-btn {
+            background: #2c2c2c;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #3c3c3c;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .info-section {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .info-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2196F3;
+        }
+
+        .info-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+            font-size: 0.9rem;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            #graphCanvas {
+                height: 400px;
+            }
+            .controls {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="calculator.html" class="back-btn">← Hesap Makinesi</a>
+        <div class="header-title">📈 Grafik Çizimi</div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" class="function-input" id="functionInput" placeholder="Fonksiyon girin (örn: x^2, sin(x), 2*x+3)">
+                <button class="add-btn" onclick="addFunction()">Ekle</button>
+            </div>
+            <div class="function-list" id="functionList"></div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="graphCanvas"></canvas>
+            <div class="coordinates" id="coordinates">x: 0.00, y: 0.00</div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="zoomIn()">🔍 Yakınlaştır</button>
+            <button class="control-btn" onclick="zoomOut()">🔍 Uzaklaştır</button>
+            <button class="control-btn" onclick="resetView()">🎯 Sıfırla</button>
+            <button class="control-btn" onclick="toggleGrid()">⊞ Izgara</button>
+            <button class="control-btn" onclick="saveGraph()">💾 Kaydet</button>
+            <button class="control-btn" onclick="clearAll()">🗑️ Temizle</button>
+        </div>
+
+        <div class="info-section">
+            <div class="info-title">Desteklenen Fonksiyonlar</div>
+            <div class="info-item">• Temel: x^2, x^3, 2*x+3, x/2</div>
+            <div class="info-item">• Trigonometrik: sin(x), cos(x), tan(x)</div>
+            <div class="info-item">• Logaritmik: log(x), ln(x)</div>
+            <div class="info-item">• Diğer: sqrt(x), abs(x), exp(x)</div>
+            <div class="info-item">• Kombinasyon: sin(x)*cos(x), x^2+2*x+1</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('graphCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let functions = [];
+        let scale = 50;
+        let offsetX = 0;
+        let offsetY = 0;
+        let showGrid = true;
+        let isDragging = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        const colors = ['#2196F3', '#4CAF50', '#FF9800', '#f44336', '#9C27B0', '#00BCD4'];
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            drawGraph();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const graphX = ((x - canvas.width / 2 - offsetX) / scale).toFixed(2);
+            const graphY = ((canvas.height / 2 - y + offsetY) / scale).toFixed(2);
+
+            document.getElementById('coordinates').textContent = `x: ${graphX}, y: ${graphY}`;
+
+            if (isDragging) {
+                offsetX += x - lastX;
+                offsetY += y - lastY;
+                lastX = x;
+                lastY = y;
+                drawGraph();
+            }
+        });
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const rect = canvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+
+        function addFunction() {
+            const input = document.getElementById('functionInput');
+            const func = input.value.trim();
+
+            if (!func) return;
+
+            try {
+                testFunction(func);
+                functions.push({
+                    expression: func,
+                    color: colors[functions.length % colors.length]
+                });
+                input.value = '';
+                updateFunctionList();
+                drawGraph();
+            } catch (error) {
+                alert('Geçersiz fonksiyon: ' + error.message);
+            }
+        }
+
+        function testFunction(func) {
+            const x = 1;
+            evaluateFunction(func, x);
+        }
+
+        function evaluateFunction(func, x) {
+            const safeFunc = func
+                .replace(/\^/g, '**')
+                .replace(/sin/g, 'Math.sin')
+                .replace(/cos/g, 'Math.cos')
+                .replace(/tan/g, 'Math.tan')
+                .replace(/log/g, 'Math.log10')
+                .replace(/ln/g, 'Math.log')
+                .replace(/sqrt/g, 'Math.sqrt')
+                .replace(/abs/g, 'Math.abs')
+                .replace(/exp/g, 'Math.exp');
+
+            return eval(safeFunc);
+        }
+
+        function updateFunctionList() {
+            const list = document.getElementById('functionList');
+            list.innerHTML = functions.map((f, i) => `
+                <div class="function-tag">
+                    <div class="function-color" style="background: ${f.color}"></div>
+                    <span>${f.expression}</span>
+                    <button class="remove-btn" onclick="removeFunction(${i})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function removeFunction(index) {
+            functions.splice(index, 1);
+            updateFunctionList();
+            drawGraph();
+        }
+
+        function drawGraph() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2 + offsetX;
+            const centerY = canvas.height / 2 - offsetY;
+
+            if (showGrid) {
+                drawGrid(centerX, centerY);
+            }
+
+            drawAxes(centerX, centerY);
+
+            functions.forEach(f => {
+                drawFunction(f, centerX, centerY);
+            });
+        }
+
+        function drawGrid(centerX, centerY) {
+            ctx.strokeStyle = '#222';
+            ctx.lineWidth = 1;
+
+            for (let x = centerX % scale; x < canvas.width; x += scale) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            for (let y = centerY % scale; y < canvas.height; y += scale) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+
+        function drawAxes(centerX, centerY) {
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(canvas.width, centerY);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, canvas.height);
+            ctx.stroke();
+
+            ctx.fillStyle = '#888';
+            ctx.font = '12px monospace';
+
+            for (let i = -20; i <= 20; i++) {
+                if (i === 0) continue;
+                const x = centerX + i * scale;
+                if (x > 0 && x < canvas.width) {
+                    ctx.fillText(i.toString(), x - 5, centerY + 15);
+                }
+            }
+
+            for (let i = -20; i <= 20; i++) {
+                if (i === 0) continue;
+                const y = centerY - i * scale;
+                if (y > 0 && y < canvas.height) {
+                    ctx.fillText(i.toString(), centerX + 5, y + 5);
+                }
+            }
+        }
+
+        function drawFunction(func, centerX, centerY) {
+            ctx.strokeStyle = func.color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            let started = false;
+
+            for (let px = 0; px < canvas.width; px++) {
+                const x = (px - centerX) / scale;
+
+                try {
+                    const y = evaluateFunction(func.expression, x);
+
+                    if (isFinite(y)) {
+                        const py = centerY - y * scale;
+
+                        if (py >= 0 && py <= canvas.height) {
+                            if (!started) {
+                                ctx.moveTo(px, py);
+                                started = true;
+                            } else {
+                                ctx.lineTo(px, py);
+                            }
+                        } else {
+                            started = false;
+                        }
+                    } else {
+                        started = false;
+                    }
+                } catch (error) {
+                    started = false;
+                }
+            }
+
+            ctx.stroke();
+        }
+
+        function zoomIn() {
+            scale *= 1.2;
+            drawGraph();
+        }
+
+        function zoomOut() {
+            scale /= 1.2;
+            drawGraph();
+        }
+
+        function resetView() {
+            scale = 50;
+            offsetX = 0;
+            offsetY = 0;
+            drawGraph();
+        }
+
+        function toggleGrid() {
+            showGrid = !showGrid;
+            drawGraph();
+        }
+
+        function saveGraph() {
+            const link = document.createElement('a');
+            link.download = 'grafik.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function clearAll() {
+            functions = [];
+            updateFunctionList();
+            drawGraph();
+        }
+
+        document.getElementById('functionInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                addFunction();
+            }
+        });
+
+        drawGraph();
+    </script>
+</body>
+</html>

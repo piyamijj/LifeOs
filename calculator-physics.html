@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fizik Sabitleri & Formüller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: #2c2c2c;
+            border: none;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #2196F3;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .search-box {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .constants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .constant-card {
+            background: #2c2c2c;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .constant-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+
+        .constant-symbol {
+            font-size: 1.5rem;
+            font-family: 'Times New Roman', serif;
+            margin-bottom: 10px;
+            color: #FF9800;
+        }
+
+        .constant-value {
+            font-family: monospace;
+            font-size: 1rem;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+
+        .constant-unit {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .formulas-section {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #444;
+        }
+
+        .formula-item {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .formula-name {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .formula-expression {
+            font-family: 'Times New Roman', serif;
+            font-size: 1.3rem;
+            color: #FF9800;
+            margin-bottom: 8px;
+        }
+
+        .formula-description {
+            font-size: 0.9rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .calculator-section {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .calc-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2196F3;
+            margin-bottom: 15px;
+        }
+
+        .formula-selector {
+            width: 100%;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .formula-selector:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-label {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        .input-field {
+            width: 100%;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            background: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .calculate-btn:active {
+            transform: scale(0.98);
+        }
+
+        .result-box {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .result-label {
+            font-size: 1rem;
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .constants-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="calculator.html" class="back-btn">← Hesap Makinesi</a>
+        <div class="header-title">⚛️ Fizik Sabitleri & Formüller</div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('constants')">Sabitler</button>
+            <button class="tab-btn" onclick="showTab('formulas')">Formüller</button>
+            <button class="tab-btn" onclick="showTab('calculator')">Hesaplayıcı</button>
+        </div>
+
+        <!-- Sabitler -->
+        <div id="constants" class="section active">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Sabit ara..." oninput="searchConstants(this.value)">
+            </div>
+
+            <div class="constants-grid" id="constantsGrid">
+                <div class="constant-card">
+                    <div class="constant-name">Işık Hızı</div>
+                    <div class="constant-symbol">c</div>
+                    <div class="constant-value">299,792,458</div>
+                    <div class="constant-unit">m/s</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Evrensel Çekim Sabiti</div>
+                    <div class="constant-symbol">G</div>
+                    <div class="constant-value">6.674 × 10⁻¹¹</div>
+                    <div class="constant-unit">N·m²/kg²</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Planck Sabiti</div>
+                    <div class="constant-symbol">h</div>
+                    <div class="constant-value">6.626 × 10⁻³⁴</div>
+                    <div class="constant-unit">J·s</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Boltzmann Sabiti</div>
+                    <div class="constant-symbol">k</div>
+                    <div class="constant-value">1.381 × 10⁻²³</div>
+                    <div class="constant-unit">J/K</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Avogadro Sayısı</div>
+                    <div class="constant-symbol">Nₐ</div>
+                    <div class="constant-value">6.022 × 10²³</div>
+                    <div class="constant-unit">mol⁻¹</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Elektron Kütlesi</div>
+                    <div class="constant-symbol">mₑ</div>
+                    <div class="constant-value">9.109 × 10⁻³¹</div>
+                    <div class="constant-unit">kg</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Proton Kütlesi</div>
+                    <div class="constant-symbol">mₚ</div>
+                    <div class="constant-value">1.673 × 10⁻²⁷</div>
+                    <div class="constant-unit">kg</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Elektron Yükü</div>
+                    <div class="constant-symbol">e</div>
+                    <div class="constant-value">1.602 × 10⁻¹⁹</div>
+                    <div class="constant-unit">C</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Yerçekimi İvmesi</div>
+                    <div class="constant-symbol">g</div>
+                    <div class="constant-value">9.80665</div>
+                    <div class="constant-unit">m/s²</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Gaz Sabiti</div>
+                    <div class="constant-symbol">R</div>
+                    <div class="constant-value">8.314</div>
+                    <div class="constant-unit">J/(mol·K)</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Stefan-Boltzmann Sabiti</div>
+                    <div class="constant-symbol">σ</div>
+                    <div class="constant-value">5.670 × 10⁻⁸</div>
+                    <div class="constant-unit">W/(m²·K⁴)</div>
+                </div>
+
+                <div class="constant-card">
+                    <div class="constant-name">Vakum Geçirgenliği</div>
+                    <div class="constant-symbol">ε₀</div>
+                    <div class="constant-value">8.854 × 10⁻¹²</div>
+                    <div class="constant-unit">F/m</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formüller -->
+        <div id="formulas" class="section">
+            <div class="formulas-section">
+                <div class="category-title">Mekanik</div>
+                
+                <div class="formula-item">
+                    <div class="formula-name">Newton'un İkinci Yasası</div>
+                    <div class="formula-expression">F = m × a</div>
+                    <div class="formula-description">F: Kuvvet (N), m: Kütle (kg), a: İvme (m/s²)</div>
+                </div>
+
+                <div class="formula-item">
+                    <div class="formula-name">Kinetik Enerji</div>
+                    <div class="formula-expression">Eₖ = ½ × m × v²</div>
+                    <div class="formula-description">Eₖ: Kinetik enerji (J), m: Kütle (kg), v: Hız (m/s)</div>
+                </div>
+
+                <div class="formula-item">
+                    <div class="formula-name">Potansiyel Enerji</div>
+                    <div class="formula-expression">Eₚ = m × g × h</div>
+                    <div class="formula-description">Eₚ: Potansiyel enerji (J), m: Kütle (kg), g: Yerçekimi (9.81 m/s²), h: Yükseklik (m)</div>
+                </div>
+
+                <div class="formula-item">
+                    <div class="formula-name">Momentum</div>
+                    <div class="formula-expression">p = m × v</div>
+                    <div class="formula-description">p: Momentum (kg·m/s), m: Kütle (kg), v: Hız (m/s)</div>
+                </div>
+            </div>
+
+            <div class="formulas-section">
+                <div class="category-title">Elektrik</div>
+                
+                <div class="formula-item">
+                    <div class="formula-name">Ohm Yasası</div>
+                    <div class="formula-expression">V = I × R</div>
+                    <div class="formula-description">V: Gerilim (V), I: Akım (A), R: Direnç (Ω)</div>
+                </div>
+
+                <div class="formula-item">
+                    <div class="formula-name">Elektrik Gücü</div>
+                    <div class="formula-expression">P = V × I</div>
+                    <div class="formula-description">P: Güç (W), V: Gerilim (V), I: Akım (A)</div>
+                </div>
+
+                <div class="formula-item">
+                    <div class="formula-name">Elektrik Enerjisi</div>
+                    <div class="formula-expression">E = P × t</div>
+                    <div class="formula-description">E: Enerji (J), P: Güç (W), t: Zaman (s)</div>
+                </div>
+            </div>
+
+            <div class="formulas-section">
+                <div class="category-title">Dalgalar</div>
+                
+                <div class="formula-item">
+                    <div class="formula-name">Dalga Hızı</div>
+                    <div class="formula-expression">v = f × λ</div>
+                    <div class="formula-description">v: Hız (m/s), f: Frekans (Hz), λ: Dalga boyu (m)</div>
+                </div>
+
+                <div class="formula-item">
+                    <div class="formula-name">Periyot</div>
+                    <div class="formula-expression">T = 1 / f</div>
+                    <div class="formula-description">T: Periyot (s), f: Frekans (Hz)</div>
+                </div>
+            </div>
+
+            <div class="formulas-section">
+                <div class="category-title">Termodinamik</div>
+                
+                <div class="formula-item">
+                    <div class="formula-name">İdeal Gaz Yasası</div>
+                    <div class="formula-expression">PV = nRT</div>
+                    <div class="formula-description">P: Basınç (Pa), V: Hacim (m³), n: Mol sayısı, R: Gaz sabiti (8.314 J/(mol·K)), T: Sıcaklık (K)</div>
+                </div>
+
+                <div class="formula-item">
+                    <div class="formula-name">Isı Enerjisi</div>
+                    <div class="formula-expression">Q = m × c × ΔT</div>
+                    <div class="formula-description">Q: Isı (J), m: Kütle (kg), c: Özgül ısı (J/(kg·K)), ΔT: Sıcaklık değişimi (K)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hesaplayıcı -->
+        <div id="calculator" class="section">
+            <div class="calculator-section">
+                <div class="calc-title">Formül Hesaplayıcı</div>
+                
+                <select class="formula-selector" id="formulaSelect" onchange="selectFormula()">
+                    <option value="">Formül seçin...</option>
+                    <option value="force">Kuvvet (F = m × a)</option>
+                    <option value="kinetic">Kinetik Enerji (Eₖ = ½mv²)</option>
+                    <option value="potential">Potansiyel Enerji (Eₚ = mgh)</option>
+                    <option value="ohm">Ohm Yasası (V = IR)</option>
+                    <option value="power">Elektrik Gücü (P = VI)</option>
+                    <option value="wave">Dalga Hızı (v = fλ)</option>
+                </select>
+
+                <div id="calculatorInputs"></div>
+
+                <div class="result-box" id="resultBox">
+                    <div class="result-value" id="resultValue">0</div>
+                    <div class="result-label" id="resultLabel">Sonuç</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function searchConstants(query) {
+            const cards = document.querySelectorAll('.constant-card');
+            const searchTerm = query.toLowerCase();
+
+            cards.forEach(card => {
+                const name = card.querySelector('.constant-name').textContent.toLowerCase();
+                const symbol = card.querySelector('.constant-symbol').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || symbol.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        const formulas = {
+            force: {
+                name: 'Kuvvet',
+                unit: 'N',
+                inputs: [
+                    { id: 'm', label: 'Kütle (kg)', placeholder: '10' },
+                    { id: 'a', label: 'İvme (m/s²)', placeholder: '9.81' }
+                ],
+                calculate: (values) => values.m * values.a
+            },
+            kinetic: {
+                name: 'Kinetik Enerji',
+                unit: 'J',
+                inputs: [
+                    { id: 'm', label: 'Kütle (kg)', placeholder: '10' },
+                    { id: 'v', label: 'Hız (m/s)', placeholder: '20' }
+                ],
+                calculate: (values) => 0.5 * values.m * values.v * values.v
+            },
+            potential: {
+                name: 'Potansiyel Enerji',
+                unit: 'J',
+                inputs: [
+                    { id: 'm', label: 'Kütle (kg)', placeholder: '10' },
+                    { id: 'g', label: 'Yerçekimi (m/s²)', placeholder: '9.81' },
+                    { id: 'h', label: 'Yükseklik (m)', placeholder: '5' }
+                ],
+                calculate: (values) => values.m * values.g * values.h
+            },
+            ohm: {
+                name: 'Gerilim',
+                unit: 'V',
+                inputs: [
+                    { id: 'I', label: 'Akım (A)', placeholder: '2' },
+                    { id: 'R', label: 'Direnç (Ω)', placeholder: '10' }
+                ],
+                calculate: (values) => values.I * values.R
+            },
+            power: {
+                name: 'Güç',
+                unit: 'W',
+                inputs: [
+                    { id: 'V', label: 'Gerilim (V)', placeholder: '220' },
+                    { id: 'I', label: 'Akım (A)', placeholder: '2' }
+                ],
+                calculate: (values) => values.V * values.I
+            },
+            wave: {
+                name: 'Dalga Hızı',
+                unit: 'm/s',
+                inputs: [
+                    { id: 'f', label: 'Frekans (Hz)', placeholder: '100' },
+                    { id: 'lambda', label: 'Dalga Boyu (m)', placeholder: '3' }
+                ],
+                calculate: (values) => values.f * values.lambda
+            }
+        };
+
+        function selectFormula() {
+            const select = document.getElementById('formulaSelect');
+            const formulaKey = select.value;
+            const inputsContainer = document.getElementById('calculatorInputs');
+            const resultBox = document.getElementById('resultBox');
+
+            if (!formulaKey) {
+                inputsContainer.innerHTML = '';
+                resultBox.classList.remove('show');
+                return;
+            }
+
+            const formula = formulas[formulaKey];
+            let html = '';
+
+            formula.inputs.forEach(input => {
+                html += `
+                    <div class="input-group">
+                        <div class="input-label">${input.label}</div>
+                        <input type="number" class="input-field" id="input_${input.id}" 
+                               placeholder="${input.placeholder}" oninput="calculateFormula('${formulaKey}')">
+                    </div>
+                `;
+            });
+
+            html += '<button class="calculate-btn" onclick="calculateFormula(\'' + formulaKey + '\')">Hesapla</button>';
+
+            inputsContainer.innerHTML = html;
+            resultBox.classList.remove('show');
+        }
+
+        function calculateFormula(formulaKey) {
+            const formula = formulas[formulaKey];
+            const values = {};
+            let allFilled = true;
+
+            formula.inputs.forEach(input => {
+                const value = parseFloat(document.getElementById('input_' + input.id).value);
+                if (isNaN(value)) {
+                    allFilled = false;
+                } else {
+                    values[input.id] = value;
+                }
+            });
+
+            if (!allFilled) {
+                document.getElementById('resultBox').classList.remove('show');
+                return;
+            }
+
+            const result = formula.calculate(values);
+
+            document.getElementById('resultValue').textContent = result.toFixed(4) + ' ' + formula.unit;
+            document.getElementById('resultLabel').textContent = formula.name;
+            document.getElementById('resultBox').classList.add('show');
+        }
+    </script>
+</body>
+</html>

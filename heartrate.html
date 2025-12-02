@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nabız Ölçer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .header {
+            background: rgba(0,0,0,0.2);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .camera-container {
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+            height: 300px;
+        }
+
+        #video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.5);
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .camera-overlay.hidden {
+            display: none;
+        }
+
+        .finger-icon {
+            font-size: 4rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .instruction {
+            font-size: 1rem;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .bpm-display {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .heart-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: heartbeat 1s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+
+        .bpm-value {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .bpm-label {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .status-text {
+            font-size: 1rem;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .start-btn {
+            background: #fff;
+            color: #f44336;
+        }
+
+        .stop-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .zones {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .zone-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .zone-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .zone-item.active {
+            background: rgba(255,255,255,0.3);
+            font-weight: bold;
+        }
+
+        .history {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .history-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+        }
+
+        .quality-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .quality-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .quality-fill {
+            height: 100%;
+            background: #4CAF50;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            color: #333;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f44336;
+        }
+
+        .modal-icon {
+            font-size: 3rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f44336;
+        }
+
+        .modal-body {
+            line-height: 1.6;
+        }
+
+        .modal-body h3 {
+            color: #f44336;
+            margin: 20px 0 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .modal-body ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .modal-body li {
+            margin: 8px 0;
+        }
+
+        .modal-body strong {
+            color: #f44336;
+        }
+
+        .info-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .modal-footer {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn-primary {
+            background: #f44336;
+            color: white;
+        }
+
+        .modal-btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="back-btn">← Geri</a>
+        <div class="header-title">❤️ Nabız Ölçer</div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <div class="camera-container">
+            <video id="video" autoplay playsinline></video>
+            <canvas id="canvas"></canvas>
+            <div class="camera-overlay" id="overlay">
+                <div class="finger-icon">👆</div>
+                <div class="instruction">Parmağınızı arka kameraya yerleştirin<br>Flaş otomatik açılacak</div>
+            </div>
+        </div>
+
+        <div class="bpm-display">
+            <div class="heart-icon">❤️</div>
+            <div class="bpm-value" id="bpmValue">--</div>
+            <div class="bpm-label">Nabız (BPM)</div>
+            <div class="status-text" id="statusText">Ölçüm başlatmak için butona basın</div>
+            <div class="quality-indicator">
+                <span>Sinyal Kalitesi:</span>
+                <div class="quality-bar">
+                    <div class="quality-fill" id="qualityFill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn start-btn" id="startBtn" onclick="startMeasurement()">Ölçümü Başlat</button>
+            <button class="control-btn stop-btn" id="stopBtn" onclick="stopMeasurement()" style="display:none;">Durdur</button>
+        </div>
+
+        <div class="zones">
+            <div class="zone-title">Nabız Bölgeleri</div>
+            <div class="zone-item" data-zone="resting">
+                <span>Dinlenme</span>
+                <span>< 60 BPM</span>
+            </div>
+            <div class="zone-item" data-zone="normal">
+                <span>Normal</span>
+                <span>60-100 BPM</span>
+            </div>
+            <div class="zone-item" data-zone="elevated">
+                <span>Yüksek</span>
+                <span>100-120 BPM</span>
+            </div>
+            <div class="zone-item" data-zone="high">
+                <span>Çok Yüksek</span>
+                <span>> 120 BPM</span>
+            </div>
+        </div>
+
+        <div class="history">
+            <div class="history-title">Son Ölçümler</div>
+            <div id="historyList">
+                <div style="text-align: center; opacity: 0.5;">Henüz ölçüm yok</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Permission Guide Modal -->
+    <div class="modal" id="permissionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon">📷</div>
+                <div class="modal-title">Kamera İzni Gerekli</div>
+            </div>
+            <div class="modal-body">
+                <p>Nabız ölçümü için kamera erişimine ihtiyaç var. Kamera izni engellenmiş görünüyor.</p>
+
+                <div class="info-box">
+                    <strong>💡 Nasıl Çalışır?</strong><br>
+                    Parmağınızı kameraya tuttuğunuzda, flaş ışığı parmağınızdan geçer. Kan akışındaki değişimler kamera tarafından algılanır ve nabzınız hesaplanır.
+                </div>
+
+                <h3>🔧 Kamera İznini Nasıl Veririm?</h3>
+
+                <strong>Yöntem 1: Hızlı Yol</strong>
+                <ol>
+                    <li>Tarayıcı adres çubuğunun <strong>solundaki kilit 🔒 ikonuna</strong> tıklayın</li>
+                    <li><strong>"Kamera"</strong> iznini bulun</li>
+                    <li><strong>"İzin Ver"</strong> veya <strong>"Allow"</strong> seçin</li>
+                    <li>Sayfayı yenileyin (F5)</li>
+                </ol>
+
+                <strong>Yöntem 2: Ayarlardan</strong>
+                <ol>
+                    <li>Chrome menüsünü (⋮) açın</li>
+                    <li><strong>Ayarlar</strong> → <strong>Gizlilik ve güvenlik</strong></li>
+                    <li><strong>Site ayarları</strong> → <strong>Kamera</strong></li>
+                    <li>Bu siteyi <strong>"İzin verilen"</strong> listesine ekleyin</li>
+                    <li>Sayfayı yenileyin</li>
+                </ol>
+
+                <div class="info-box">
+                    <strong>⚠️ Önemli:</strong> Kamera izni vermezseniz nabız ölçümü yapılamaz. Gizliliğiniz önemlidir - kamera sadece ölçüm sırasında aktif olur ve hiçbir görüntü kaydedilmez.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-primary" onclick="closeModalAndRetry()">Anladım, Tekrar Dene</button>
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        let stream = null;
+        let measuring = false;
+        let measurements = [];
+        let lastPeakTime = 0;
+        let peaks = [];
+        let history = [];
+
+        async function startMeasurement() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment',
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    }
+                });
+
+                video.srcObject = stream;
+                
+                const track = stream.getVideoTracks()[0];
+                const capabilities = track.getCapabilities();
+                
+                if (capabilities.torch) {
+                    await track.applyConstraints({
+                        advanced: [{ torch: true }]
+                    });
+                }
+
+                document.getElementById('overlay').classList.add('hidden');
+                document.getElementById('startBtn').style.display = 'none';
+                document.getElementById('stopBtn').style.display = 'block';
+                document.getElementById('statusText').textContent = 'Ölçüm yapılıyor... Parmağınızı sabit tutun';
+
+                measuring = true;
+                measurements = [];
+                peaks = [];
+                
+                setTimeout(() => {
+                    measureLoop();
+                }, 1000);
+
+            } catch (error) {
+                console.error('Kamera erişim hatası:', error);
+                
+                if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+                    showPermissionModal();
+                } else if (error.name === 'NotFoundError') {
+                    alert('❌ Kamera bulunamadı\n\nCihazınızda kamera olmayabilir veya başka bir uygulama kullanıyor olabilir.');
+                } else if (error.name === 'NotReadableError') {
+                    alert('❌ Kamera kullanımda\n\nKamera başka bir uygulama tarafından kullanılıyor olabilir. Lütfen diğer uygulamaları kapatıp tekrar deneyin.');
+                } else {
+                    alert('❌ Kamera erişimi başarısız\n\n' + error.message + '\n\nLütfen tarayıcı ayarlarından kamera iznini kontrol edin.');
+                }
+            }
+        }
+
+        function showPermissionModal() {
+            document.getElementById('permissionModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('permissionModal').classList.remove('show');
+        }
+
+        function closeModalAndRetry() {
+            closeModal();
+            setTimeout(() => {
+                startMeasurement();
+            }, 500);
+        }
+
+        function stopMeasurement() {
+            measuring = false;
+            
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+
+            document.getElementById('overlay').classList.remove('hidden');
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('stopBtn').style.display = 'none';
+            document.getElementById('statusText').textContent = 'Ölçüm durduruldu';
+            document.getElementById('qualityFill').style.width = '0%';
+        }
+
+        function measureLoop() {
+            if (!measuring) return;
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            let redSum = 0;
+            let count = 0;
+
+            for (let i = 0; i < data.length; i += 4) {
+                redSum += data[i];
+                count++;
+            }
+
+            const avgRed = redSum / count;
+            measurements.push(avgRed);
+
+            if (measurements.length > 300) {
+                measurements.shift();
+            }
+
+            if (measurements.length > 30) {
+                detectPulse();
+            }
+
+            const quality = Math.min(measurements.length / 100 * 100, 100);
+            document.getElementById('qualityFill').style.width = quality + '%';
+
+            requestAnimationFrame(measureLoop);
+        }
+
+        function detectPulse() {
+            if (measurements.length < 50) return;
+
+            const recent = measurements.slice(-50);
+            const avg = recent.reduce((a, b) => a + b) / recent.length;
+            const threshold = avg * 1.02;
+
+            const currentTime = Date.now();
+            const lastValue = recent[recent.length - 1];
+            const prevValue = recent[recent.length - 2];
+
+            if (prevValue < threshold && lastValue >= threshold) {
+                if (currentTime - lastPeakTime > 300) {
+                    peaks.push(currentTime);
+                    lastPeakTime = currentTime;
+
+                    if (peaks.length > 10) {
+                        peaks.shift();
+                    }
+
+                    if (peaks.length >= 3) {
+                        calculateBPM();
+                    }
+                }
+            }
+        }
+
+        function calculateBPM() {
+            if (peaks.length < 3) return;
+
+            const intervals = [];
+            for (let i = 1; i < peaks.length; i++) {
+                intervals.push(peaks[i] - peaks[i - 1]);
+            }
+
+            const avgInterval = intervals.reduce((a, b) => a + b) / intervals.length;
+            const bpm = Math.round(60000 / avgInterval);
+
+            if (bpm >= 40 && bpm <= 200) {
+                document.getElementById('bpmValue').textContent = bpm;
+                updateZone(bpm);
+                
+                if (peaks.length >= 5) {
+                    addToHistory(bpm);
+                }
+            }
+        }
+
+        function updateZone(bpm) {
+            document.querySelectorAll('.zone-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            let zone = 'normal';
+            if (bpm < 60) zone = 'resting';
+            else if (bpm > 100 && bpm <= 120) zone = 'elevated';
+            else if (bpm > 120) zone = 'high';
+
+            document.querySelector(`[data-zone="${zone}"]`).classList.add('active');
+
+            const messages = {
+                resting: 'Dinlenme nabzı - Normal',
+                normal: 'Normal nabız aralığı',
+                elevated: 'Yüksek nabız - Dikkat',
+                high: 'Çok yüksek nabız - Doktora danışın'
+            };
+
+            document.getElementById('statusText').textContent = messages[zone];
+        }
+
+        function addToHistory(bpm) {
+            const now = new Date();
+            const time = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            
+            if (history.length === 0 || history[0].bpm !== bpm) {
+                history.unshift({ bpm, time });
+                
+                if (history.length > 5) {
+                    history.pop();
+                }
+
+                updateHistoryDisplay();
+            }
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div style="text-align: center; opacity: 0.5;">Henüz ölçüm yok</div>';
+                return;
+            }
+
+            historyList.innerHTML = history.map(item => `
+                <div class="history-item">
+                    <span>${item.time}</span>
+                    <span>${item.bpm} BPM</span>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>

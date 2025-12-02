@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birim Çevirici</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .category-selector {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .category-label {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #aaa;
+        }
+
+        .category-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .category-btn {
+            background: #444;
+            border: none;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .category-btn.active {
+            background: #2196F3;
+        }
+
+        .converter-section {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-field {
+            flex: 1;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .unit-select {
+            flex: 1;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .unit-select:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .swap-btn {
+            background: #FF9800;
+            border: none;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .swap-btn:hover {
+            transform: rotate(180deg);
+        }
+
+        .swap-btn:active {
+            transform: scale(0.9);
+        }
+
+        .result-display {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .result-label {
+            font-size: 1rem;
+            color: #aaa;
+        }
+
+        .quick-conversions {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .quick-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2196F3;
+        }
+
+        .quick-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            margin: 8px 0;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+
+        .quick-label {
+            color: #aaa;
+        }
+
+        .quick-value {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .category-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .input-row {
+                flex-direction: column;
+            }
+            .swap-btn {
+                transform: rotate(90deg);
+            }
+            .swap-btn:hover {
+                transform: rotate(270deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="calculator.html" class="back-btn">← Hesap Makinesi</a>
+        <div class="header-title">⚖️ Birim Çevirici</div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <div class="category-selector">
+            <div class="category-label">Kategori Seçin:</div>
+            <div class="category-buttons">
+                <button class="category-btn active" onclick="setCategory('length')">Uzunluk</button>
+                <button class="category-btn" onclick="setCategory('area')">Alan</button>
+                <button class="category-btn" onclick="setCategory('volume')">Hacim</button>
+                <button class="category-btn" onclick="setCategory('mass')">Kütle</button>
+                <button class="category-btn" onclick="setCategory('temperature')">Sıcaklık</button>
+                <button class="category-btn" onclick="setCategory('speed')">Hız</button>
+                <button class="category-btn" onclick="setCategory('energy')">Enerji</button>
+                <button class="category-btn" onclick="setCategory('pressure')">Basınç</button>
+                <button class="category-btn" onclick="setCategory('time')">Zaman</button>
+            </div>
+        </div>
+
+        <div class="converter-section">
+            <div class="input-group">
+                <div class="input-label">Dönüştür:</div>
+                <div class="input-row">
+                    <input type="number" class="input-field" id="fromValue" value="1" oninput="convert()">
+                    <select class="unit-select" id="fromUnit" onchange="convert()"></select>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="swap-btn" onclick="swapUnits()">⇅</button>
+            </div>
+
+            <div class="input-group">
+                <div class="input-label">Sonuç:</div>
+                <div class="input-row">
+                    <input type="number" class="input-field" id="toValue" value="0" readonly>
+                    <select class="unit-select" id="toUnit" onchange="convert()"></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-conversions" id="quickConversions">
+            <div class="quick-title">Hızlı Çevrimler</div>
+            <div id="quickList"></div>
+        </div>
+    </div>
+
+    <script>
+        const units = {
+            length: {
+                meter: { name: 'Metre', factor: 1 },
+                kilometer: { name: 'Kilometre', factor: 1000 },
+                centimeter: { name: 'Santimetre', factor: 0.01 },
+                millimeter: { name: 'Milimetre', factor: 0.001 },
+                mile: { name: 'Mil', factor: 1609.344 },
+                yard: { name: 'Yarda', factor: 0.9144 },
+                foot: { name: 'Fit', factor: 0.3048 },
+                inch: { name: 'İnç', factor: 0.0254 }
+            },
+            area: {
+                square_meter: { name: 'Metrekare', factor: 1 },
+                square_kilometer: { name: 'Kilometrekare', factor: 1000000 },
+                hectare: { name: 'Hektar', factor: 10000 },
+                acre: { name: 'Akre', factor: 4046.86 },
+                square_foot: { name: 'Fit Kare', factor: 0.092903 }
+            },
+            volume: {
+                liter: { name: 'Litre', factor: 1 },
+                milliliter: { name: 'Mililitre', factor: 0.001 },
+                gallon: { name: 'Galon (US)', factor: 3.78541 },
+                cubic_meter: { name: 'Metreküp', factor: 1000 },
+                cubic_centimeter: { name: 'Santimetreküp', factor: 0.001 }
+            },
+            mass: {
+                kilogram: { name: 'Kilogram', factor: 1 },
+                gram: { name: 'Gram', factor: 0.001 },
+                ton: { name: 'Ton', factor: 1000 },
+                pound: { name: 'Pound', factor: 0.453592 },
+                ounce: { name: 'Ons', factor: 0.0283495 }
+            },
+            temperature: {
+                celsius: { name: 'Celsius', factor: 1 },
+                fahrenheit: { name: 'Fahrenheit', factor: 1 },
+                kelvin: { name: 'Kelvin', factor: 1 }
+            },
+            speed: {
+                kmh: { name: 'Kilometre/Saat', factor: 1 },
+                ms: { name: 'Metre/Saniye', factor: 3.6 },
+                mph: { name: 'Mil/Saat', factor: 1.60934 },
+                knot: { name: 'Knot', factor: 1.852 }
+            },
+            energy: {
+                joule: { name: 'Joule', factor: 1 },
+                calorie: { name: 'Kalori', factor: 4.184 },
+                kwh: { name: 'Kilowatt-saat', factor: 3600000 },
+                btu: { name: 'BTU', factor: 1055.06 }
+            },
+            pressure: {
+                pascal: { name: 'Pascal', factor: 1 },
+                bar: { name: 'Bar', factor: 100000 },
+                atm: { name: 'Atmosfer', factor: 101325 },
+                psi: { name: 'PSI', factor: 6894.76 }
+            },
+            time: {
+                second: { name: 'Saniye', factor: 1 },
+                minute: { name: 'Dakika', factor: 60 },
+                hour: { name: 'Saat', factor: 3600 },
+                day: { name: 'Gün', factor: 86400 },
+                week: { name: 'Hafta', factor: 604800 },
+                year: { name: 'Yıl', factor: 31536000 }
+            }
+        };
+
+        let currentCategory = 'length';
+
+        function setCategory(category) {
+            currentCategory = category;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            populateUnits();
+            convert();
+        }
+
+        function populateUnits() {
+            const fromUnit = document.getElementById('fromUnit');
+            const toUnit = document.getElementById('toUnit');
+            
+            fromUnit.innerHTML = '';
+            toUnit.innerHTML = '';
+
+            const categoryUnits = units[currentCategory];
+            
+            Object.keys(categoryUnits).forEach(key => {
+                const option1 = document.createElement('option');
+                option1.value = key;
+                option1.textContent = categoryUnits[key].name;
+                fromUnit.appendChild(option1);
+
+                const option2 = document.createElement('option');
+                option2.value = key;
+                option2.textContent = categoryUnits[key].name;
+                toUnit.appendChild(option2);
+            });
+
+            if (Object.keys(categoryUnits).length > 1) {
+                toUnit.selectedIndex = 1;
+            }
+        }
+
+        function convert() {
+            const fromValue = parseFloat(document.getElementById('fromValue').value) || 0;
+            const fromUnitKey = document.getElementById('fromUnit').value;
+            const toUnitKey = document.getElementById('toUnit').value;
+
+            let result;
+
+            if (currentCategory === 'temperature') {
+                result = convertTemperature(fromValue, fromUnitKey, toUnitKey);
+            } else {
+                const fromFactor = units[currentCategory][fromUnitKey].factor;
+                const toFactor = units[currentCategory][toUnitKey].factor;
+                result = fromValue * (fromFactor / toFactor);
+            }
+
+            document.getElementById('toValue').value = result.toFixed(6);
+            updateQuickConversions(fromValue, fromUnitKey);
+        }
+
+        function convertTemperature(value, from, to) {
+            let celsius;
+
+            if (from === 'celsius') celsius = value;
+            else if (from === 'fahrenheit') celsius = (value - 32) * 5/9;
+            else if (from === 'kelvin') celsius = value - 273.15;
+
+            if (to === 'celsius') return celsius;
+            else if (to === 'fahrenheit') return celsius * 9/5 + 32;
+            else if (to === 'kelvin') return celsius + 273.15;
+        }
+
+        function swapUnits() {
+            const fromUnit = document.getElementById('fromUnit');
+            const toUnit = document.getElementById('toUnit');
+            const fromValue = document.getElementById('fromValue');
+            const toValue = document.getElementById('toValue');
+
+            const tempUnit = fromUnit.value;
+            fromUnit.value = toUnit.value;
+            toUnit.value = tempUnit;
+
+            const tempValue = fromValue.value;
+            fromValue.value = toValue.value;
+            toValue.value = tempValue;
+
+            convert();
+        }
+
+        function updateQuickConversions(value, fromUnit) {
+            const quickList = document.getElementById('quickList');
+            const categoryUnits = units[currentCategory];
+            
+            let html = '';
+            
+            Object.keys(categoryUnits).forEach(key => {
+                if (key !== fromUnit) {
+                    let result;
+                    if (currentCategory === 'temperature') {
+                        result = convertTemperature(value, fromUnit, key);
+                    } else {
+                        const fromFactor = categoryUnits[fromUnit].factor;
+                        const toFactor = categoryUnits[key].factor;
+                        result = value * (fromFactor / toFactor);
+                    }
+                    
+                    html += `
+                        <div class="quick-item">
+                            <span class="quick-label">${categoryUnits[key].name}</span>
+                            <span class="quick-value">${result.toFixed(4)}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            quickList.innerHTML = html;
+        }
+
+        populateUnits();
+        convert();
+    </script>
+</body>
+</html>

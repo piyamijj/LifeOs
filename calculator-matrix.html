@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Hesaplayıcı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .size-selector {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .size-label {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        .size-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .size-btn {
+            background: #444;
+            border: 2px solid #555;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .size-btn.active {
+            background: #2196F3;
+            border-color: #2196F3;
+        }
+
+        .matrices-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .matrix-section {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .matrix-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2196F3;
+        }
+
+        .matrix-grid {
+            display: grid;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .matrix-cell {
+            background: #1a1a1a;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .matrix-cell:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .operations {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .operations-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2196F3;
+        }
+
+        .operation-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .operation-btn {
+            background: #444;
+            border: none;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .operation-btn:hover {
+            background: #555;
+        }
+
+        .operation-btn:active {
+            transform: scale(0.95);
+        }
+
+        .operation-btn.primary {
+            background: #4CAF50;
+        }
+
+        .result-section {
+            background: #2c2c2c;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4CAF50;
+        }
+
+        .result-content {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: monospace;
+            font-size: 1rem;
+            line-height: 1.8;
+            min-height: 100px;
+        }
+
+        .result-matrix {
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .result-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .result-cell {
+            min-width: 60px;
+            text-align: center;
+            padding: 5px;
+            background: #2c2c2c;
+            border-radius: 4px;
+        }
+
+        .scalar-input {
+            background: #1a1a1a;
+            border: 2px solid #444;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100px;
+            margin-right: 10px;
+        }
+
+        .scalar-input:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        @media (max-width: 768px) {
+            .matrices-container {
+                grid-template-columns: 1fr;
+            }
+            .operation-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="calculator.html" class="back-btn">← Hesap Makinesi</a>
+        <div class="header-title">🔢 Matrix Hesaplayıcı</div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <div class="size-selector">
+            <div class="size-label">Matrix Boyutu:</div>
+            <div class="size-buttons">
+                <button class="size-btn" onclick="setSize(2)">2×2</button>
+                <button class="size-btn active" onclick="setSize(3)">3×3</button>
+                <button class="size-btn" onclick="setSize(4)">4×4</button>
+            </div>
+        </div>
+
+        <div class="matrices-container">
+            <div class="matrix-section">
+                <div class="matrix-title">Matrix A</div>
+                <div class="matrix-grid" id="matrixA"></div>
+                <button class="operation-btn" onclick="fillRandom('A')">Rastgele Doldur</button>
+                <button class="operation-btn" onclick="fillIdentity('A')">Birim Matrix</button>
+                <button class="operation-btn" onclick="fillZero('A')">Sıfır Matrix</button>
+            </div>
+
+            <div class="matrix-section">
+                <div class="matrix-title">Matrix B</div>
+                <div class="matrix-grid" id="matrixB"></div>
+                <button class="operation-btn" onclick="fillRandom('B')">Rastgele Doldur</button>
+                <button class="operation-btn" onclick="fillIdentity('B')">Birim Matrix</button>
+                <button class="operation-btn" onclick="fillZero('B')">Sıfır Matrix</button>
+            </div>
+        </div>
+
+        <div class="operations">
+            <div class="operations-title">İşlemler</div>
+            <div class="operation-buttons">
+                <button class="operation-btn primary" onclick="calculate('add')">A + B</button>
+                <button class="operation-btn primary" onclick="calculate('subtract')">A - B</button>
+                <button class="operation-btn primary" onclick="calculate('multiply')">A × B</button>
+                <button class="operation-btn" onclick="calculate('transpose-a')">Transpose A</button>
+                <button class="operation-btn" onclick="calculate('transpose-b')">Transpose B</button>
+                <button class="operation-btn" onclick="calculate('determinant-a')">Det(A)</button>
+                <button class="operation-btn" onclick="calculate('determinant-b')">Det(B)</button>
+                <button class="operation-btn" onclick="calculate('inverse-a')">A⁻¹</button>
+                <button class="operation-btn" onclick="calculate('inverse-b')">B⁻¹</button>
+                <button class="operation-btn" onclick="calculate('trace-a')">Trace(A)</button>
+                <button class="operation-btn" onclick="calculate('trace-b')">Trace(B)</button>
+                <button class="operation-btn" onclick="scalarMultiply()">Skaler × A</button>
+            </div>
+        </div>
+
+        <div class="result-section">
+            <div class="result-title">Sonuç</div>
+            <div class="result-content" id="result">İşlem seçin...</div>
+        </div>
+    </div>
+
+    <script>
+        let size = 3;
+        let matrixA = [];
+        let matrixB = [];
+
+        function setSize(n) {
+            size = n;
+            document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            initMatrices();
+        }
+
+        function initMatrices() {
+            matrixA = Array(size).fill(0).map(() => Array(size).fill(0));
+            matrixB = Array(size).fill(0).map(() => Array(size).fill(0));
+            renderMatrix('A');
+            renderMatrix('B');
+        }
+
+        function renderMatrix(name) {
+            const container = document.getElementById('matrix' + name);
+            const matrix = name === 'A' ? matrixA : matrixB;
+            
+            container.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+            container.innerHTML = '';
+
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    const input = document.createElement('input');
+                    input.type = 'number';
+                    input.className = 'matrix-cell';
+                    input.value = matrix[i][j];
+                    input.oninput = (e) => {
+                        matrix[i][j] = parseFloat(e.target.value) || 0;
+                    };
+                    container.appendChild(input);
+                }
+            }
+        }
+
+        function fillRandom(name) {
+            const matrix = name === 'A' ? matrixA : matrixB;
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    matrix[i][j] = Math.floor(Math.random() * 20) - 10;
+                }
+            }
+            renderMatrix(name);
+        }
+
+        function fillIdentity(name) {
+            const matrix = name === 'A' ? matrixA : matrixB;
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    matrix[i][j] = i === j ? 1 : 0;
+                }
+            }
+            renderMatrix(name);
+        }
+
+        function fillZero(name) {
+            const matrix = name === 'A' ? matrixA : matrixB;
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    matrix[i][j] = 0;
+                }
+            }
+            renderMatrix(name);
+        }
+
+        function calculate(operation) {
+            let result = '';
+
+            try {
+                switch(operation) {
+                    case 'add':
+                        result = displayMatrix(addMatrices(matrixA, matrixB), 'A + B');
+                        break;
+                    case 'subtract':
+                        result = displayMatrix(subtractMatrices(matrixA, matrixB), 'A - B');
+                        break;
+                    case 'multiply':
+                        result = displayMatrix(multiplyMatrices(matrixA, matrixB), 'A × B');
+                        break;
+                    case 'transpose-a':
+                        result = displayMatrix(transpose(matrixA), 'Transpose(A)');
+                        break;
+                    case 'transpose-b':
+                        result = displayMatrix(transpose(matrixB), 'Transpose(B)');
+                        break;
+                    case 'determinant-a':
+                        result = `Det(A) = ${determinant(matrixA).toFixed(4)}`;
+                        break;
+                    case 'determinant-b':
+                        result = `Det(B) = ${determinant(matrixB).toFixed(4)}`;
+                        break;
+                    case 'inverse-a':
+                        result = displayMatrix(inverse(matrixA), 'A⁻¹');
+                        break;
+                    case 'inverse-b':
+                        result = displayMatrix(inverse(matrixB), 'B⁻¹');
+                        break;
+                    case 'trace-a':
+                        result = `Trace(A) = ${trace(matrixA).toFixed(4)}`;
+                        break;
+                    case 'trace-b':
+                        result = `Trace(B) = ${trace(matrixB).toFixed(4)}`;
+                        break;
+                }
+            } catch (error) {
+                result = 'Hata: ' + error.message;
+            }
+
+            document.getElementById('result').innerHTML = result;
+        }
+
+        function scalarMultiply() {
+            const scalar = prompt('Skaler değer girin:');
+            if (scalar === null) return;
+
+            const s = parseFloat(scalar);
+            if (isNaN(s)) {
+                alert('Geçersiz sayı!');
+                return;
+            }
+
+            const result = matrixA.map(row => row.map(val => val * s));
+            document.getElementById('result').innerHTML = displayMatrix(result, `${s} × A`);
+        }
+
+        function addMatrices(a, b) {
+            return a.map((row, i) => row.map((val, j) => val + b[i][j]));
+        }
+
+        function subtractMatrices(a, b) {
+            return a.map((row, i) => row.map((val, j) => val - b[i][j]));
+        }
+
+        function multiplyMatrices(a, b) {
+            const result = Array(size).fill(0).map(() => Array(size).fill(0));
+            for (let i = 0; i < size; i++) {
+                for (let j = 0; j < size; j++) {
+                    for (let k = 0; k < size; k++) {
+                        result[i][j] += a[i][k] * b[k][j];
+                    }
+                }
+            }
+            return result;
+        }
+
+        function transpose(matrix) {
+            return matrix[0].map((_, i) => matrix.map(row => row[i]));
+        }
+
+        function determinant(matrix) {
+            const n = matrix.length;
+            if (n === 1) return matrix[0][0];
+            if (n === 2) return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+
+            let det = 0;
+            for (let j = 0; j < n; j++) {
+                det += Math.pow(-1, j) * matrix[0][j] * determinant(minor(matrix, 0, j));
+            }
+            return det;
+        }
+
+        function minor(matrix, row, col) {
+            return matrix
+                .filter((_, i) => i !== row)
+                .map(r => r.filter((_, j) => j !== col));
+        }
+
+        function inverse(matrix) {
+            const det = determinant(matrix);
+            if (Math.abs(det) < 1e-10) {
+                throw new Error('Matrix tekil (determinant = 0)');
+            }
+
+            const n = matrix.length;
+            const adj = Array(n).fill(0).map(() => Array(n).fill(0));
+
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n; j++) {
+                    const sign = Math.pow(-1, i + j);
+                    adj[j][i] = sign * determinant(minor(matrix, i, j));
+                }
+            }
+
+            return adj.map(row => row.map(val => val / det));
+        }
+
+        function trace(matrix) {
+            return matrix.reduce((sum, row, i) => sum + row[i], 0);
+        }
+
+        function displayMatrix(matrix, title) {
+            let html = `<div style="margin-bottom: 10px; font-weight: bold;">${title}:</div>`;
+            html += '<div class="result-matrix">';
+            
+            matrix.forEach(row => {
+                html += '<div class="result-row">';
+                row.forEach(val => {
+                    html += `<div class="result-cell">${val.toFixed(2)}</div>`;
+                });
+                html += '</div>';
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        initMatrices();
+    </script>
+</body>
+</html>
