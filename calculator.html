@@ -3,492 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Süper Hesap Makinesi</title>
+    <title>Hesap Makinesi</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+        body { background: #000; color: #fff; margin: 0; display: flex; flex-direction: column; height: 100vh; font-family: sans-serif; }
+        .header { padding: 15px; background: #111; display: flex; justify-content: space-between; align-items: center; }
+        .back-btn { color: #fff; text-decoration: none; font-size: 1.2rem; }
+        
+        .display { flex: 1; text-align: right; font-size: 3rem; padding: 20px; display: flex; align-items: flex-end; justify-content: flex-end; word-break: break-all; }
+        
+        .tabs { display: flex; background: #222; }
+        .tab-btn { flex: 1; padding: 15px; background: #222; color: #888; border: none; font-weight: bold; cursor: pointer; }
+        .tab-btn.active { background: #000; color: #2196F3; border-top: 2px solid #2196F3; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #1a1a1a;
-            color: #fff;
-            overflow-x: hidden;
-            user-select: none;
-        }
+        .keypad { display: none; padding: 10px; gap: 8px; background: #000; height: 60%; }
+        .keypad.show { display: grid; }
+        
+        /* Temel Mod Izgarası */
+        #basic { grid-template-columns: repeat(4, 1fr); }
+        /* Bilimsel Mod Izgarası */
+        #scientific { grid-template-columns: repeat(5, 1fr); }
 
-        .header {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .back-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .header-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .menu-btn {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .display-container {
-            background: #000;
-            padding: 20px;
-            min-height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-        }
-
-        .display-history {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            min-height: 20px;
-        }
-
-        .display-main {
-            color: #2196F3;
-            font-size: 2.5rem;
-            font-weight: 300;
-            text-align: right;
-            word-wrap: break-word;
-        }
-
-        .display-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        .mode-indicator {
-            color: #4CAF50;
-        }
-
-        .memory-indicator {
-            color: #FF9800;
-        }
-
-        .controls {
-            background: #222;
-            padding: 10px 20px;
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-        }
-
-        .control-btn {
-            background: #333;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 8px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-
-        .control-btn.active {
-            background: #2196F3;
-            border-color: #2196F3;
-        }
-
-        .buttons {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .btn {
-            background: #2c2c2c;
-            border: none;
-            color: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-
-        .btn:active {
-            transform: scale(0.95);
-            background: #3c3c3c;
-        }
-
-        .btn.operator {
-            background: #FF9800;
-            color: #000;
-            font-weight: bold;
-        }
-
-        .btn.function {
-            background: #444;
-            color: #2196F3;
-            font-size: 1rem;
-        }
-
-        .btn.special {
-            background: #1976D2;
-        }
-
-        .btn.equals {
-            background: #4CAF50;
-            color: #000;
-            font-weight: bold;
-        }
-
-        .btn.wide {
-            grid-column: span 2;
-        }
-
-        .module-menu {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .module-menu.show {
-            display: flex;
-        }
-
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            padding: 20px;
-            max-width: 500px;
-        }
-
-        .module-item {
-            background: #2c2c2c;
-            padding: 30px 20px;
-            border-radius: 15px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            color: white;
-        }
-
-        .module-item:hover {
-            background: #3c3c3c;
-            transform: translateY(-5px);
-        }
-
-        .module-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .module-name {
-            font-size: 1rem;
-            font-weight: bold;
-        }
-
-        .close-menu {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #f44336;
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        @media (orientation: landscape) {
-            .buttons {
-                grid-template-columns: repeat(6, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .display-main {
-                font-size: 2rem;
-            }
-            .btn {
-                padding: 15px;
-                font-size: 1rem;
-            }
-        }
+        button { padding: 15px; font-size: 1.2rem; border-radius: 10px; border: none; background: #333; color: #fff; }
+        .op { background: #ff9800; color: #000; font-weight: bold; }
+        .eq { background: #4caf50; color: #000; grid-column: span 2; font-weight: bold; }
+        .fn { background: #2196F3; font-size: 1rem; }
     </style>
 </head>
 <body>
     <div class="header">
         <a href="index.html" class="back-btn">← Geri</a>
-        <div class="header-title">Süper Hesap Makinesi</div>
-        <button class="menu-btn" onclick="toggleMenu()">☰ Modüller</button>
+        <span>Süper Hesaplayıcı</span>
+        <div style="width:20px;"></div>
     </div>
 
-    <div class="display-container">
-        <div class="display-history" id="history"></div>
-        <div class="display-main" id="display">0</div>
-        <div class="display-info">
-            <span class="mode-indicator" id="mode">DEG</span>
-            <span class="memory-indicator" id="memoryInfo"></span>
-        </div>
+    <div class="display" id="result">0</div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="setTab('basic')">Temel</button>
+        <button class="tab-btn" onclick="setTab('scientific')">Bilimsel</button>
     </div>
 
-    <div class="controls">
-        <button class="control-btn active" onclick="setMode('DEG')">DEG</button>
-        <button class="control-btn" onclick="setMode('RAD')">RAD</button>
-        <button class="control-btn" onclick="setMode('GRA')">GRA</button>
-        <button class="control-btn" onclick="toggleFunction()">F</button>
-        <button class="control-btn" onclick="showMemoryMenu()">MEM</button>
+    <div id="basic" class="keypad show">
+        <button class="fn" onclick="clr()">C</button>
+        <button class="fn" onclick="del()">⌫</button>
+        <button class="fn" onclick="add('%')">%</button>
+        <button class="op" onclick="add('/')">÷</button>
+        <button onclick="add('7')">7</button><button onclick="add('8')">8</button><button onclick="add('9')">9</button>
+        <button class="op" onclick="add('*')">×</button>
+        <button onclick="add('4')">4</button><button onclick="add('5')">5</button><button onclick="add('6')">6</button>
+        <button class="op" onclick="add('-')">-</button>
+        <button onclick="add('1')">1</button><button onclick="add('2')">2</button><button onclick="add('3')">3</button>
+        <button class="op" onclick="add('+')">+</button>
+        <button onclick="add('0')">0</button><button onclick="add('.')">.</button>
+        <button class="eq" onclick="calc()">=</button>
     </div>
 
-    <div class="buttons" id="buttonGrid">
-        <button class="btn function" onclick="calcFunc('sin')">sin</button>
-        <button class="btn function" onclick="calcFunc('cos')">cos</button>
-        <button class="btn function" onclick="calcFunc('tan')">tan</button>
-        <button class="btn special" onclick="calcClear()">C</button>
-
-        <button class="btn function" onclick="calcFunc('log')">log</button>
-        <button class="btn function" onclick="calcFunc('ln')">ln</button>
-        <button class="btn function" onclick="calcFunc('sqrt')">√</button>
-        <button class="btn operator" onclick="calcOp('/')">÷</button>
-
-        <button class="btn" onclick="calcNum('7')">7</button>
-        <button class="btn" onclick="calcNum('8')">8</button>
-        <button class="btn" onclick="calcNum('9')">9</button>
-        <button class="btn operator" onclick="calcOp('*')">×</button>
-
-        <button class="btn" onclick="calcNum('4')">4</button>
-        <button class="btn" onclick="calcNum('5')">5</button>
-        <button class="btn" onclick="calcNum('6')">6</button>
-        <button class="btn operator" onclick="calcOp('-')">−</button>
-
-        <button class="btn" onclick="calcNum('1')">1</button>
-        <button class="btn" onclick="calcNum('2')">2</button>
-        <button class="btn" onclick="calcNum('3')">3</button>
-        <button class="btn operator" onclick="calcOp('+')">+</button>
-
-        <button class="btn" onclick="calcNum('0')">0</button>
-        <button class="btn" onclick="calcNum('.')">.</button>
-        <button class="btn function" onclick="insertConstant('pi')">π</button>
-        <button class="btn equals" onclick="calcEquals()">=</button>
-
-        <button class="btn function" onclick="calcFunc('pow')">x²</button>
-        <button class="btn function" onclick="calcFunc('exp')">eˣ</button>
-        <button class="btn function" onclick="insertConstant('e')">e</button>
-        <button class="btn special" onclick="calcBackspace()">⌫</button>
-    </div>
-
-    <div class="module-menu" id="moduleMenu">
-        <button class="close-menu" onclick="toggleMenu()">×</button>
-        <div class="module-grid">
-            <a href="calculator-graph.html" class="module-item">
-                <div class="module-icon">📈</div>
-                <div class="module-name">Grafik Çizimi</div>
-            </a>
-            <a href="calculator-matrix.html" class="module-item">
-                <div class="module-icon">🔢</div>
-                <div class="module-name">Matrix</div>
-            </a>
-            <a href="calculator-finance.html" class="module-item">
-                <div class="module-icon">💰</div>
-                <div class="module-name">Finans</div>
-            </a>
-            <a href="calculator-units.html" class="module-item">
-                <div class="module-icon">⚖️</div>
-                <div class="module-name">Birim Çevirici</div>
-            </a>
-            <a href="calculator-physics.html" class="module-item">
-                <div class="module-icon">⚛️</div>
-                <div class="module-name">Fizik Sabitleri</div>
-            </a>
-        </div>
+    <div id="scientific" class="keypad">
+        <button class="fn" onclick="clr()">C</button>
+        <button class="fn" onclick="math('sin')">sin</button>
+        <button class="fn" onclick="math('cos')">cos</button>
+        <button class="fn" onclick="math('tan')">tan</button>
+        <button class="op" onclick="add('/')">÷</button>
+        
+        <button class="fn" onclick="math('log')">log</button>
+        <button onclick="add('7')">7</button><button onclick="add('8')">8</button><button onclick="add('9')">9</button>
+        <button class="op" onclick="add('*')">×</button>
+        
+        <button class="fn" onclick="math('ln')">ln</button>
+        <button onclick="add('4')">4</button><button onclick="add('5')">5</button><button onclick="add('6')">6</button>
+        <button class="op" onclick="add('-')">-</button>
+        
+        <button class="fn" onclick="math('sqrt')">√</button>
+        <button onclick="add('1')">1</button><button onclick="add('2')">2</button><button onclick="add('3')">3</button>
+        <button class="op" onclick="add('+')">+</button>
+        
+        <button class="fn" onclick="math('pow')">x²</button>
+        <button onclick="add('0')">0</button><button onclick="add('.')">.</button>
+        <button onclick="add(Math.PI.toFixed(4))">π</button>
+        <button class="eq" onclick="calc()">=</button>
     </div>
 
     <script>
-        const calc = {
-            display: '0',
-            previous: '',
-            operator: null,
-            mode: 'DEG',
-            memory: [0, 0, 0, 0, 0],
-            currentMemory: 0,
-            functionMode: false,
-            history: []
-        };
+        let current = '0';
 
-        const constants = {
-            pi: Math.PI,
-            e: Math.E,
-            g: 9.80665,
-            c: 299792458,
-            h: 6.62607015e-34
-        };
-
-        function updateDisplay() {
-            document.getElementById('display').textContent = calc.display;
-            document.getElementById('history').textContent = calc.previous + (calc.operator || '');
-            document.getElementById('mode').textContent = calc.mode;
-            
-            const memUsed = calc.memory.filter(m => m !== 0).length;
-            if (memUsed > 0) {
-                document.getElementById('memoryInfo').textContent = `M${calc.currentMemory + 1}: ${calc.memory[calc.currentMemory]}`;
-            } else {
-                document.getElementById('memoryInfo').textContent = '';
-            }
-        }
-
-        function calcNum(n) {
-            if (calc.display === '0' || calc.display === 'Error') {
-                calc.display = n;
-            } else {
-                calc.display += n;
-            }
-            updateDisplay();
-        }
-
-        function calcOp(op) {
-            if (calc.operator && calc.previous) {
-                calcEquals();
-            }
-            calc.previous = calc.display;
-            calc.display = '0';
-            calc.operator = op;
-            updateDisplay();
-        }
-
-        function calcEquals() {
-            if (!calc.operator || !calc.previous) return;
-            
-            const a = parseFloat(calc.previous);
-            const b = parseFloat(calc.display);
-            let result = 0;
-
-            switch(calc.operator) {
-                case '+': result = a + b; break;
-                case '-': result = a - b; break;
-                case '*': result = a * b; break;
-                case '/': result = b !== 0 ? a / b : 'Error'; break;
-            }
-
-            calc.history.push(`${a} ${calc.operator} ${b} = ${result}`);
-            calc.display = result.toString();
-            calc.previous = '';
-            calc.operator = null;
-            updateDisplay();
-        }
-
-        function calcClear() {
-            calc.display = '0';
-            calc.previous = '';
-            calc.operator = null;
-            updateDisplay();
-        }
-
-        function calcBackspace() {
-            if (calc.display.length > 1) {
-                calc.display = calc.display.slice(0, -1);
-            } else {
-                calc.display = '0';
-            }
-            updateDisplay();
-        }
-
-        function calcFunc(func) {
-            const val = parseFloat(calc.display);
-            let result = 0;
-
-            const angleConv = calc.mode === 'DEG' ? Math.PI / 180 : (calc.mode === 'GRA' ? Math.PI / 200 : 1);
-
-            switch(func) {
-                case 'sin': result = Math.sin(val * angleConv); break;
-                case 'cos': result = Math.cos(val * angleConv); break;
-                case 'tan': result = Math.tan(val * angleConv); break;
-                case 'log': result = val > 0 ? Math.log10(val) : 'Error'; break;
-                case 'ln': result = val > 0 ? Math.log(val) : 'Error'; break;
-                case 'sqrt': result = val >= 0 ? Math.sqrt(val) : 'Error'; break;
-                case 'pow': result = Math.pow(val, 2); break;
-                case 'exp': result = Math.exp(val); break;
-            }
-
-            calc.display = result.toString();
-            updateDisplay();
-        }
-
-        function insertConstant(name) {
-            calc.display = constants[name].toString();
-            updateDisplay();
-        }
-
-        function setMode(mode) {
-            calc.mode = mode;
-            document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+        function setTab(id) {
+            document.querySelectorAll('.keypad').forEach(e => e.classList.remove('show'));
+            document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
+            document.getElementById(id).classList.add('show');
             event.target.classList.add('active');
-            updateDisplay();
         }
 
-        function toggleFunction() {
-            calc.functionMode = !calc.functionMode;
-            event.target.classList.toggle('active');
+        function update() { document.getElementById('result').innerText = current; }
+
+        function add(val) {
+            if(current === '0') current = String(val); else current += String(val);
+            update();
         }
 
-        function showMemoryMenu() {
-            const menu = prompt('Hafıza İşlemi:\n1. M+ (Ekle)\n2. M- (Çıkar)\n3. MR (Geri Çağır)\n4. MC (Temizle)\n5. M1-M5 Seç');
-            
-            if (menu === '1') {
-                calc.memory[calc.currentMemory] += parseFloat(calc.display);
-            } else if (menu === '2') {
-                calc.memory[calc.currentMemory] -= parseFloat(calc.display);
-            } else if (menu === '3') {
-                calc.display = calc.memory[calc.currentMemory].toString();
-            } else if (menu === '4') {
-                calc.memory[calc.currentMemory] = 0;
-            } else if (menu >= '1' && menu <= '5') {
-                calc.currentMemory = parseInt(menu) - 1;
-            }
-            
-            updateDisplay();
+        function clr() { current = '0'; update(); }
+        
+        function del() { 
+            current = current.length > 1 ? current.slice(0, -1) : '0'; 
+            update(); 
         }
 
-        function toggleMenu() {
-            document.getElementById('moduleMenu').classList.toggle('show');
+        function calc() {
+            try { current = String(eval(current)); } catch { current = 'Hata'; }
+            update();
         }
 
-        updateDisplay();
+        function math(func) {
+            try {
+                let val = parseFloat(current);
+                if(func === 'sin') val = Math.sin(val);
+                if(func === 'cos') val = Math.cos(val);
+                if(func === 'tan') val = Math.tan(val);
+                if(func === 'log') val = Math.log10(val);
+                if(func === 'ln') val = Math.log(val);
+                if(func === 'sqrt') val = Math.sqrt(val);
+                if(func === 'pow') val = Math.pow(val, 2);
+                current = String(val.toFixed(4));
+            } catch { current = 'Hata'; }
+            update();
+        }
     </script>
 </body>
 </html>
