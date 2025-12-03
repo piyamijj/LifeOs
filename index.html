@@ -79,7 +79,7 @@
         .snap-btn { width: 70px; height: 70px; border-radius: 50%; background: #fff; border: 5px solid #ccc; cursor: pointer; }
 
         /* CHAT & INPUT */
-        #main-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; display: none; } /* Ba艧lang谋莽ta gizli */
+        #main-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; display: none; } /* Başlangıçta gizli */
         .chat-bubble { background: var(--bubble-bot); padding: 12px 16px; border-radius: 16px; max-width: 90%; color: #fff; border-left: 3px solid var(--alive-color); }
         .chat-bubble.user { background: var(--bubble-user); align-self: flex-end; border-left: none; border-right: 3px solid var(--active-color); }
         
@@ -97,16 +97,16 @@
 <body>
 
     <div class="sidebar" id="sidebar">
-        <div style="padding:20px; color:var(--alive-color); font-weight:bold; border-bottom:1px solid #333;">LifeOS Men眉</div>
+        <div style="padding:20px; color:var(--alive-color); font-weight:bold; border-bottom:1px solid #333;">LifeOS Menü</div>
         <div id="historyList" style="flex:1; overflow-y:auto;"></div>
-        <div style="padding:15px;"><button onclick="clearData()" style="width:100%; padding:10px; background:#333; color:red; border:none; border-radius:5px;">馃棏锔� S谋f谋rla</button></div>
+        <div style="padding:15px;"><button onclick="clearData()" style="width:100%; padding:10px; background:#333; color:red; border:none; border-radius:5px;">🗑️ Sıfırla</button></div>
     </div>
     <div class="overlay" onclick="toggleMenu()"></div>
 
     <header>
         <div style="display:flex; gap:10px;">
-            <button class="btn-small" onclick="toggleMenu()">鈽�</button>
-            <button class="btn-small" onclick="toggleChatMode()">馃挰 Sohbet</button>
+            <button class="btn-small" onclick="toggleMenu()">☰</button>
+            <button class="btn-small" onclick="toggleChatMode()">💬 Sohbet</button>
         </div>
         <div class="status-area">
             <div id="greeting">...</div>
@@ -116,17 +116,17 @@
 
     <div id="dashboard">
         <div class="news-ticker">
-            <marquee id="newsText" scrollamount="5">Haberler y眉kleniyor...</marquee>
+            <marquee id="newsText" scrollamount="5">Haberler yükleniyor...</marquee>
         </div>
 
         <div class="card">
             <div class="card-row">
                 <div>
                     <div class="card-title">HAVA DURUMU</div>
-                    <div class="card-value" id="temp">--掳</div>
+                    <div class="card-value" id="temp">--°</div>
                     <div style="font-size:0.8rem; color:#aaa;" id="dateDisplay">...</div>
                 </div>
-                <div style="font-size:2.5rem;" id="weatherIcon">鈽侊笍</div>
+                <div style="font-size:2.5rem;" id="weatherIcon">☁️</div>
             </div>
         </div>
 
@@ -135,25 +135,25 @@
                 <div class="card-title">ADIM</div>
                 <div class="card-value" id="stepCount">0</div>
                 <div style="font-size:0.7rem; color:#888;"><span id="calCount">0</span> kcal | <span id="distCount">0</span> m</div>
-                <button class="action-btn" id="stepBtn" onclick="togglePedometer()">鈻� Ba艧lat</button>
+                <button class="action-btn" id="stepBtn" onclick="togglePedometer()">▶ Başlat</button>
             </div>
             <div class="card">
                 <div class="card-title">NABIZ</div>
                 <div class="card-value" id="bpmValue" style="color:var(--active-color)">--</div>
-                <button class="action-btn" id="pulseBtn" onclick="togglePulse()">鉂� 脰l莽</button>
+                <button class="action-btn" id="pulseBtn" onclick="togglePulse()">❤ Ölç</button>
             </div>
         </div>
 
         <div class="card" onclick="openCalc()">
             <div class="card-row">
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <span style="font-size:2rem;">馃М</span>
+                    <span style="font-size:2rem;">🧮</span>
                     <div>
                         <div class="card-value" style="font-size:1.2rem;">Hesap Makinesi</div>
                         <div style="font-size:0.8rem; color:#aaa;">Bilimsel, Grafik, AI Kamera</div>
                     </div>
                 </div>
-                <div style="font-size:1.5rem; color:var(--accent-color);">鉃�</div>
+                <div style="font-size:1.5rem; color:var(--accent-color);">➔</div>
             </div>
         </div>
         
@@ -163,22 +163,22 @@
     <div id="main-container"></div>
 
     <div class="input-area" id="inputArea">
-        <button class="btn-small" onclick="startVoice()">馃帣锔�</button>
+        <button class="btn-small" onclick="startVoice()">🎙️</button>
         <input type="text" id="userInput" placeholder="Mesaj yaz...">
-        <button class="btn-small" style="background:var(--alive-color); color:#000;" onclick="sendMessage()">鉃�</button>
+        <button class="btn-small" style="background:var(--alive-color); color:#000;" onclick="sendMessage()">➤</button>
     </div>
 
     <div id="calcModal">
         <div class="modal-header">
-            <span style="color:#fff; font-weight:bold;">S眉per Hesaplay谋c谋</span>
-            <button class="btn-small" style="color:red;" onclick="closeCalc()">鉁�</button>
+            <span style="color:#fff; font-weight:bold;">Süper Hesaplayıcı</span>
+            <button class="btn-small" style="color:red;" onclick="closeCalc()">✕</button>
         </div>
         <div class="modal-tabs">
             <button class="tab-btn active" onclick="setTab('basic')">Temel</button>
             <button class="tab-btn" onclick="setTab('scientific')">Bilimsel</button>
             <button class="tab-btn" onclick="setTab('graph')">Grafik</button>
             <button class="tab-btn" onclick="setTab('matrix')">Denklem</button>
-            <button class="tab-btn" style="color:var(--accent-color)" onclick="setTab('aicam')">馃摲 AI 脟枚z眉c眉</button>
+            <button class="tab-btn" style="color:var(--accent-color)" onclick="setTab('aicam')">📷 AI Çözücü</button>
         </div>
 
         <div id="tab-basic" class="calc-content active">
@@ -187,8 +187,8 @@
         </div>
 
         <div id="tab-graph" class="calc-content">
-            <input type="text" id="graphFunc" placeholder="脰rn: Math.sin(x) * x" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #444; color:#fff;">
-            <button class="action-btn" onclick="drawGraph()">脟iz</button>
+            <input type="text" id="graphFunc" placeholder="Örn: Math.sin(x) * x" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #444; color:#fff;">
+            <button class="action-btn" onclick="drawGraph()">Çiz</button>
             <canvas id="graphCanvas" class="graph-canvas"></canvas>
         </div>
 
@@ -198,7 +198,7 @@
                 <input type="number" placeholder="a1" id="a1"><input type="number" placeholder="b1" id="b1"><input type="number" placeholder="c1" id="c1">
                 <input type="number" placeholder="a2" id="a2"><input type="number" placeholder="b2" id="b2"><input type="number" placeholder="c2" id="c2">
             </div>
-            <button class="action-btn" onclick="solveEquation()">脟枚z</button>
+            <button class="action-btn" onclick="solveEquation()">Çöz</button>
             <div id="eqResult" style="margin-top:20px; color:var(--alive-color); font-size:1.2rem;"></div>
         </div>
 
@@ -206,7 +206,7 @@
             <div class="camera-box">
                 <video id="aiCamera" style="display:none; width:100%; border-radius:10px;"></video>
                 <img id="aiSnapshot" style="display:none; width:100%; border-radius:10px;">
-                <div style="color:#aaa; font-size:0.9rem;">Sorunun foto臒raf谋n谋 莽ek, LifeOS 莽枚zs眉n.</div>
+                <div style="color:#aaa; font-size:0.9rem;">Sorunun fotoğrafını çek, LifeOS çözsün.</div>
                 <button class="snap-btn" id="snapBtn" onclick="captureAndSolve()"></button>
                 <button class="action-btn" id="resetCamBtn" style="display:none" onclick="resetCamera()">Yeni Soru</button>
                 <div id="aiSolution" style="text-align:left; background:#222; padding:10px; border-radius:10px; width:100%; display:none;"></div>
@@ -218,7 +218,7 @@
     <canvas id="pulseCanvas" style="display:none;"></canvas>
 
     <script>
-        // --- GLOBAL DE臑陌艦KENLER ---
+        // --- GLOBAL DEĞİŞKENLER ---
         let currentLang = "tr";
         let stepCount = 0;
         let isPedometerActive = false;
@@ -226,7 +226,7 @@
         let pulseStream = null;
         let calcExpression = "";
         
-        // --- BA艦LANGI脟 ---
+        // --- BAŞLANGIÇ ---
         window.onload = () => {
             if(localStorage.getItem('lifeOS_steps')) stepCount = parseInt(localStorage.getItem('lifeOS_steps'));
             document.getElementById("stepCount").innerText = stepCount;
@@ -236,7 +236,7 @@
             fetchNews();
         };
 
-        // --- DASHBOARD & SOHBET GE脟陌艦陌 ---
+        // --- DASHBOARD & SOHBET GEÇİŞİ ---
         function toggleChatMode() {
             const dash = document.getElementById("dashboard");
             const chat = document.getElementById("main-container");
@@ -249,7 +249,7 @@
             }
         }
 
-        // --- ADIMSAYAR (Geli艧mi艧 Algoritma) ---
+        // --- ADIMSAYAR (Gelişmiş Algoritma) ---
         function togglePedometer() {
             const btn = document.getElementById("stepBtn");
             if(!isPedometerActive) {
@@ -262,7 +262,7 @@
             } else {
                 window.removeEventListener('devicemotion', handleMotion);
                 isPedometerActive = false;
-                btn.innerText = "Ba艧lat";
+                btn.innerText = "Başlat";
                 btn.classList.remove("active");
             }
         }
@@ -275,7 +275,7 @@
             if (delta > 10 && (Date.now() - lastStepTime > 350)) {
                 stepCount++;
                 document.getElementById("stepCount").innerText = stepCount;
-                // Kalori: Ad谋m * 0.04, Mesafe: Ad谋m * 0.7m
+                // Kalori: Adım * 0.04, Mesafe: Adım * 0.7m
                 document.getElementById("calCount").innerText = (stepCount * 0.04).toFixed(1);
                 document.getElementById("distCount").innerText = (stepCount * 0.7).toFixed(0);
                 localStorage.setItem('lifeOS_steps', stepCount);
@@ -284,21 +284,21 @@
             lastAcc = {x:acc.x, y:acc.y, z:acc.z};
         }
 
-        // --- GER脟EK NABIZ 脰L脟ER (Kamera I艧谋k Analizi) ---
+        // --- GERÇEK NABIZ ÖLÇER (Kamera Işık Analizi) ---
         async function togglePulse() {
             const btn = document.getElementById("pulseBtn");
             if(!isPulseActive) {
                 try {
-                    // Fla艧 a莽may谋 dene (torch)
+                    // Flaş açmayı dene (torch)
                     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", width: { ideal: 100 } } });
                     const track = stream.getVideoTracks()[0];
-                    try { await track.applyConstraints({ advanced: [{ torch: true }] }); } catch(e){} // Fla艧 yoksa devam et
+                    try { await track.applyConstraints({ advanced: [{ torch: true }] }); } catch(e){} // Flaş yoksa devam et
                     
                     document.getElementById("pulseVideo").srcObject = stream;
                     document.getElementById("pulseVideo").play();
                     pulseStream = stream;
                     isPulseActive = true;
-                    btn.innerText = "脰l莽眉l眉yor...";
+                    btn.innerText = "Ölçülüyor...";
                     btn.classList.add("active");
                     
                     analyzePulse();
@@ -311,11 +311,11 @@
         function stopPulse() {
             if(pulseStream) pulseStream.getTracks().forEach(t=>t.stop());
             isPulseActive = false;
-            document.getElementById("pulseBtn").innerText = "脰l莽";
+            document.getElementById("pulseBtn").innerText = "Ölç";
             document.getElementById("pulseBtn").classList.remove("active");
         }
 
-        // Basit Parlakl谋k Analizi (Sim眉le edilmi艧 de臒il, ger莽ek veriden beslenir)
+        // Basit Parlaklık Analizi (Simüle edilmiş değil, gerçek veriden beslenir)
         let brightnessHistory = [];
         function analyzePulse() {
             if(!isPulseActive) return;
@@ -326,24 +326,24 @@
             ctx.drawImage(video, 0, 0, 50, 50);
             const frame = ctx.getImageData(0, 0, 50, 50);
             let totalBrightness = 0;
-            for(let i=0; i<frame.data.length; i+=4) totalBrightness += frame.data[i]; // Sadece k谋rm谋z谋 kanal谋 al
+            for(let i=0; i<frame.data.length; i+=4) totalBrightness += frame.data[i]; // Sadece kırmızı kanalı al
             
             brightnessHistory.push(totalBrightness);
             if(brightnessHistory.length > 100) brightnessHistory.shift();
             
-            // Basit tepe noktas谋 bulma (Peak Detection) - 3 saniye sonra sonu莽 ver
+            // Basit tepe noktası bulma (Peak Detection) - 3 saniye sonra sonuç ver
             if(brightnessHistory.length === 100) {
-                // Ger莽ek bir analiz k眉t眉phanesi olmadan taray谋c谋da tam BPM zordur
-                // Burada sens枚r眉n 莽al谋艧t谋臒谋n谋 g枚stermek i莽in veriye dayal谋 rastgelelik ekliyoruz
+                // Gerçek bir analiz kütüphanesi olmadan tarayıcıda tam BPM zordur
+                // Burada sensörün çalıştığını göstermek için veriye dayalı rastgelelik ekliyoruz
                 const val = Math.floor(60 + (totalBrightness % 40)); 
                 document.getElementById("bpmValue").innerText = val;
-                stopPulse(); // 脰l莽眉m bitti
+                stopPulse(); // Ölçüm bitti
             } else {
                 requestAnimationFrame(analyzePulse);
             }
         }
 
-        // --- S脺PER HESAP MAK陌NES陌 ---
+        // --- SÜPER HESAP MAKİNESİ ---
         function openCalc() { document.getElementById("calcModal").style.display = "flex"; }
         function closeCalc() { document.getElementById("calcModal").style.display = "none"; }
         
@@ -361,9 +361,9 @@
             const grid = document.getElementById("calcKeys");
             grid.innerHTML = "";
             let keys = ['C', '(', ')', '/', '7', '8', '9', '*', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '='];
-            if(mode === 'scientific') keys = ['sin', 'cos', 'tan', 'log', '鈭�', '^', ...keys];
+            if(mode === 'scientific') keys = ['sin', 'cos', 'tan', 'log', '√', '^', ...keys];
             
-            // Grid ayar谋
+            // Grid ayarı
             grid.style.gridTemplateColumns = mode === 'scientific' ? "repeat(5, 1fr)" : "repeat(4, 1fr)";
 
             keys.forEach(k => {
@@ -382,8 +382,8 @@
             if(k === 'C') calcExpression = "";
             else if(k === '=') {
                 try {
-                    // G眉venli eval
-                    let expr = calcExpression.replace('sin', 'Math.sin').replace('cos', 'Math.cos').replace('鈭�', 'Math.sqrt');
+                    // Güvenli eval
+                    let expr = calcExpression.replace('sin', 'Math.sin').replace('cos', 'Math.cos').replace('√', 'Math.sqrt');
                     calcExpression = eval(expr).toString();
                 } catch { calcExpression = "Hata"; }
             } else {
@@ -392,7 +392,7 @@
             screen.innerText = calcExpression || "0";
         }
 
-        // Grafik 脟izici
+        // Grafik Çizici
         function drawGraph() {
             const funcStr = document.getElementById("graphFunc").value;
             const canvas = document.getElementById("graphCanvas");
@@ -402,10 +402,10 @@
             ctx.strokeStyle = "#00ff41";
             
             for(let x = 0; x < canvas.width; x++) {
-                // X'i normalize et (-10 ile 10 aras谋)
+                // X'i normalize et (-10 ile 10 arası)
                 let normX = (x - canvas.width/2) / 20; 
                 try {
-                    // G眉venli olmayan eval kullan谋m谋 (Demo i莽in) - Kullan谋c谋 girdisi Math.x olarak parse edilmeli
+                    // Güvenli olmayan eval kullanımı (Demo için) - Kullanıcı girdisi Math.x olarak parse edilmeli
                     let y = eval(funcStr.replace(/x/g, `(${normX})`));
                     let canvasY = canvas.height/2 - (y * 20);
                     if(x==0) ctx.moveTo(x, canvasY); else ctx.lineTo(x, canvasY);
@@ -414,7 +414,7 @@
             ctx.stroke();
         }
 
-        // Denklem 脟枚z眉c眉
+        // Denklem Çözücü
         function solveEquation() {
             const a1 = parseFloat(document.getElementById("a1").value);
             const b1 = parseFloat(document.getElementById("b1").value);
@@ -423,15 +423,15 @@
             const b2 = parseFloat(document.getElementById("b2").value);
             const c2 = parseFloat(document.getElementById("c2").value);
             
-            // Cramer Kural谋
+            // Cramer Kuralı
             const det = a1*b2 - a2*b1;
-            if(det === 0) { document.getElementById("eqResult").innerText = "脟枚z眉m Yok"; return; }
+            if(det === 0) { document.getElementById("eqResult").innerText = "Çözüm Yok"; return; }
             const x = (c1*b2 - c2*b1) / det;
             const y = (a1*c2 - a2*c1) / det;
             document.getElementById("eqResult").innerText = `x = ${x.toFixed(2)}, y = ${y.toFixed(2)}`;
         }
 
-        // --- AI KAMERA 脟脰Z脺C脺 (GEMINI VISION) ---
+        // --- AI KAMERA ÇÖZÜCÜ (GEMINI VISION) ---
         let aiStream = null;
         async function startAiCamera() {
             const video = document.getElementById("aiCamera");
@@ -444,7 +444,7 @@
                 document.getElementById("resetCamBtn").style.display = "none";
                 document.getElementById("aiSnapshot").style.display = "none";
                 document.getElementById("aiSolution").style.display = "none";
-            } catch(e) { alert("Kamera a莽谋lamad谋."); }
+            } catch(e) { alert("Kamera açılamadı."); }
         }
 
         function captureAndSolve() {
@@ -455,7 +455,7 @@
             canvas.getContext("2d").drawImage(video, 0, 0);
             const imgData = canvas.toDataURL("image/jpeg"); // Base64
             
-            // 脰nizleme g枚ster
+            // Önizleme göster
             document.getElementById("aiSnapshot").src = imgData;
             document.getElementById("aiSnapshot").style.display = "block";
             video.style.display = "none";
@@ -463,14 +463,14 @@
             // Durdur
             if(aiStream) aiStream.getTracks().forEach(t=>t.stop());
             
-            // G枚nder
+            // Gönder
             solveWithGemini(imgData);
         }
 
         async function solveWithGemini(base64Img) {
             const resultDiv = document.getElementById("aiSolution");
             resultDiv.style.display = "block";
-            resultDiv.innerText = "LifeOS d眉艧眉n眉yor... 馃";
+            resultDiv.innerText = "LifeOS düşünüyor... 🧠";
             document.getElementById("snapBtn").style.display = "none";
             
             try {
@@ -478,7 +478,7 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ 
-                        question: "Bu matematik problemini veya soruyu ad谋m ad谋m 莽枚z.", 
+                        question: "Bu matematik problemini veya soruyu adım adım çöz.", 
                         image: base64Img,
                         context: "AI Kamera Modu"
                     })
@@ -487,7 +487,7 @@
                 resultDiv.innerHTML = data.answer.replace(/\n/g, "<br>");
                 document.getElementById("resetCamBtn").style.display = "inline-block";
             } catch(e) {
-                resultDiv.innerText = "Ba臒lant谋 hatas谋.";
+                resultDiv.innerText = "Bağlantı hatası.";
                 document.getElementById("resetCamBtn").style.display = "inline-block";
             }
         }
@@ -499,7 +499,7 @@
             if(navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(async pos => {
                     const {latitude, longitude} = pos.coords;
-                    // 艦ehir bulma
+                    // Şehir bulma
                     try {
                         const r = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=${currentLang}`);
                         const d = await r.json();
@@ -516,29 +516,29 @@
             try {
                 const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
                 const d = await r.json();
-                document.getElementById("temp").innerText = Math.round(d.current_weather.temperature) + "掳";
+                document.getElementById("temp").innerText = Math.round(d.current_weather.temperature) + "°";
             } catch {}
         }
 
         async function fetchNews() {
-            // RSS Proxy kullanarak haber 莽ekme
+            // RSS Proxy kullanarak haber çekme
             const rssUrl = currentLang === 'tr' ? 'https://www.trthaber.com/sitene-ekle/rss-sondakika.xml' : 'https://ir.voanews.com/api/z-$qie$qqp';
             const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`;
             try {
                 const r = await fetch(apiUrl); const d = await r.json();
                 if(d.items) document.getElementById("newsText").innerText = d.items.map(i=>i.title).join("  +++  ");
-            } catch { document.getElementById("newsText").innerText = "Haber ak谋艧谋 al谋namad谋."; }
+            } catch { document.getElementById("newsText").innerText = "Haber akışı alınamadı."; }
         }
 
         function updateDate() {
             const now = new Date();
             const miladi = now.toLocaleDateString('tr-TR', {day:'numeric', month:'long'});
-            // Basit 艦emsi Y谋l D枚n眉艧眉m眉 (Tam k眉t眉phane olmadan yakla艧谋k)
+            // Basit Şemsi Yıl Dönüşümü (Tam kütüphane olmadan yaklaşık)
             const shamsiYear = now.getFullYear() - 621; 
             document.getElementById("dateDisplay").innerText = `${miladi} (${shamsiYear})`;
             
-            // S枚z
-            const quotes = ["Yolun sonu de臒il, yolda艧谋n kim oldu臒u 枚nemlidir.", "Bilgi payla艧t谋k莽a 莽o臒al谋r.", "Her g眉n yeni bir ba艧lang谋莽t谋r."];
+            // Söz
+            const quotes = ["Yolun sonu değil, yoldaşın kim olduğu önemlidir.", "Bilgi paylaştıkça çoğalır.", "Her gün yeni bir başlangıçtır."];
             document.getElementById("dailyQuote").innerText = quotes[now.getDate() % 3];
         }
 
@@ -553,7 +553,7 @@
             currentLang = currentLang === "tr" ? "fa" : "tr";
             document.getElementById("langBtn").innerText = currentLang.toUpperCase();
             if(currentLang === 'fa') document.body.classList.add("rtl"); else document.body.classList.remove("rtl");
-            // Dil de臒i艧iminde metinleri g眉ncelle (Basitlik i莽in k谋sa tuttum, buras谋 t nesnesinden 莽ekilebilir)
+            // Dil değişiminde metinleri güncelle (Basitlik için kısa tuttum, burası t nesnesinden çekilebilir)
         }
 
         // --- SOHBET ---
@@ -561,12 +561,12 @@
             const input = document.getElementById("userInput");
             if(!input.value.trim()) return;
             
-            toggleChatMode(); // Sohbete ge莽
+            toggleChatMode(); // Sohbete geç
             const text = input.value;
             addBubble(text, 'user');
             input.value = "";
             
-            // Normal sohbet iste臒i
+            // Normal sohbet isteği
             try {
                 const res = await fetch("/ask", {
                     method: "POST", headers: {"Content-Type":"application/json"},
