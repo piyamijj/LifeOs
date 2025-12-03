@@ -111,16 +111,16 @@
 <body>
 
     <div class="sidebar" id="sidebar">
-        <div style="padding:20px; color:var(--alive-color); font-weight:bold; border-bottom:1px solid #333;">LifeOS Men眉</div>
+        <div style="padding:20px; color:var(--alive-color); font-weight:bold; border-bottom:1px solid #333;">LifeOS Menü</div>
         <div id="historyList" style="flex:1; overflow-y:auto;"></div>
-        <div style="padding:15px;"><button onclick="clearData()" style="width:100%; padding:10px; background:#333; color:red; border:none; border-radius:5px;">馃棏锔� S谋f谋rla</button></div>
+        <div style="padding:15px;"><button onclick="clearData()" style="width:100%; padding:10px; background:#333; color:red; border:none; border-radius:5px;">🗑️ Sıfırla</button></div>
     </div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <header>
         <div style="display:flex; gap:10px;">
-            <button class="btn-small" onclick="toggleMenu()">鈽�</button>
-            <button class="btn-small" onclick="toggleChatMode()">馃挰 Sohbet</button>
+            <button class="btn-small" onclick="toggleMenu()">☰</button>
+            <button class="btn-small" onclick="toggleChatMode()">💬 Sohbet</button>
         </div>
         <div class="status-area">
             <div id="greeting">...</div>
@@ -130,17 +130,17 @@
 
     <div id="dashboard">
         <div class="news-ticker">
-            <marquee id="newsText" scrollamount="5">Haberler y眉kleniyor...</marquee>
+            <marquee id="newsText" scrollamount="5">Haberler yükleniyor...</marquee>
         </div>
 
         <div class="card">
             <div class="card-row">
                 <div>
                     <div class="card-title">HAVA DURUMU</div>
-                    <div class="card-value" id="temp">--掳</div>
+                    <div class="card-value" id="temp">--°</div>
                     <div style="font-size:0.8rem; color:#aaa;" id="dateDisplay">...</div>
                 </div>
-                <div style="font-size:2.5rem;" id="weatherIcon">鈽侊笍</div>
+                <div style="font-size:2.5rem;" id="weatherIcon">☁️</div>
             </div>
         </div>
 
@@ -149,25 +149,25 @@
                 <div class="card-title">ADIM</div>
                 <div class="card-value" id="stepCount">0</div>
                 <div style="font-size:0.7rem; color:#888;"><span id="calCount">0</span> kcal | <span id="distCount">0</span> m</div>
-                <button class="action-btn" id="stepBtn" onclick="togglePedometer()">鈻� Ba艧lat</button>
+                <button class="action-btn" id="stepBtn" onclick="togglePedometer()">▶ Başlat</button>
             </div>
             <div class="card">
                 <div class="card-title">NABIZ</div>
                 <div class="card-value" id="bpmValue" style="color:var(--active-color)">--</div>
-                <button class="action-btn" id="pulseBtn" onclick="togglePulse()">鉂� 脰l莽</button>
+                <button class="action-btn" id="pulseBtn" onclick="togglePulse()">❤ Ölç</button>
             </div>
         </div>
 
         <div class="card" onclick="openCalc()">
             <div class="card-row">
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <span style="font-size:2rem;">馃М</span>
+                    <span style="font-size:2rem;">🧮</span>
                     <div>
                         <div class="card-value" style="font-size:1.2rem;">Hesap Makinesi</div>
                         <div style="font-size:0.8rem; color:#aaa;">Bilimsel, Grafik, Fizik, Matrix, AI</div>
                     </div>
                 </div>
-                <div style="font-size:1.5rem; color:var(--accent-color);">鉃�</div>
+                <div style="font-size:1.5rem; color:var(--accent-color);">➔</div>
             </div>
         </div>
         
@@ -177,15 +177,15 @@
     <div id="main-container"></div>
 
     <div class="input-area" id="inputArea">
-        <button class="btn-small" onclick="startVoice()">馃帣锔�</button>
+        <button class="btn-small" onclick="startVoice()">🎙️</button>
         <input type="text" id="userInput" placeholder="Mesaj yaz..." onkeypress="if(event.key==='Enter') sendMessage()">
-        <button class="btn-small" style="background:var(--alive-color); color:#000;" onclick="sendMessage()">鉃�</button>
+        <button class="btn-small" style="background:var(--alive-color); color:#000;" onclick="sendMessage()">➤</button>
     </div>
 
     <div id="calcModal">
         <div class="modal-header">
-            <span style="color:#fff; font-weight:bold;">S眉per Hesaplay谋c谋</span>
-            <button class="btn-small" style="color:red;" onclick="closeCalc()">鉁�</button>
+            <span style="color:#fff; font-weight:bold;">Süper Hesaplayıcı</span>
+            <button class="btn-small" style="color:red;" onclick="closeCalc()">✕</button>
         </div>
         <div class="modal-tabs">
             <button class="tab-btn active" onclick="setTab('basic')">Temel</button>
@@ -194,7 +194,7 @@
             <button class="tab-btn" onclick="setTab('matrix')">Matrix</button>
             <button class="tab-btn" onclick="setTab('physics')">Fizik</button>
             <button class="tab-btn" onclick="setTab('equation')">Denklem</button>
-            <button class="tab-btn" style="color:var(--accent-color)" onclick="setTab('aicam')">馃摲 AI</button>
+            <button class="tab-btn" style="color:var(--accent-color)" onclick="setTab('aicam')">📷 AI</button>
         </div>
 
         <div id="tab-basic" class="calc-content active">
@@ -208,13 +208,13 @@
         </div>
 
         <div id="tab-graph" class="calc-content">
-            <input type="text" id="graphFunc" placeholder="脰rn: Math.sin(x) * x" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #444; color:#fff; border-radius:8px;">
-            <button class="action-btn" onclick="drawGraph()">脟iz</button>
+            <input type="text" id="graphFunc" placeholder="Örn: Math.sin(x) * x" style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:1px solid #444; color:#fff; border-radius:8px;">
+            <button class="action-btn" onclick="drawGraph()">Çiz</button>
             <canvas id="graphCanvas" class="graph-canvas"></canvas>
         </div>
 
         <div id="tab-matrix" class="calc-content">
-            <h3 style="color:#fff; margin-top:0;">Matrix Hesaplay谋c谋</h3>
+            <h3 style="color:#fff; margin-top:0;">Matrix Hesaplayıcı</h3>
             <div class="matrix-size">
                 <label style="color:#aaa;">Boyut:</label>
                 <select id="matrixSize" onchange="createMatrixInputs()">
@@ -230,20 +230,20 @@
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:15px;">
                 <button class="action-btn" onclick="matrixOperation('add')">A + B</button>
                 <button class="action-btn" onclick="matrixOperation('subtract')">A - B</button>
-                <button class="action-btn" onclick="matrixOperation('multiply')">A 脳 B</button>
+                <button class="action-btn" onclick="matrixOperation('multiply')">A × B</button>
                 <button class="action-btn" onclick="matrixOperation('transpose')">Transpose A</button>
                 <button class="action-btn" onclick="matrixOperation('determinant')">Det(A)</button>
-                <button class="action-btn" onclick="matrixOperation('inverse')">A鈦宦�</button>
+                <button class="action-btn" onclick="matrixOperation('inverse')">A⁻¹</button>
             </div>
             <div id="matrixResult" class="matrix-display" style="display:none;">
-                <div style="color:var(--alive-color); font-weight:bold; margin-bottom:10px;">Sonu莽:</div>
+                <div style="color:var(--alive-color); font-weight:bold; margin-bottom:10px;">Sonuç:</div>
                 <div id="matrixResultContent"></div>
             </div>
         </div>
 
         <div id="tab-physics" class="calc-content">
-            <h3 style="color:#fff; margin-top:0;">Fizik Sabitleri & Form眉ller</h3>
-            <input type="text" id="physicsSearch" class="search-box" placeholder="Ara: h谋z, enerji, k眉tle..." onkeyup="searchPhysics()">
+            <h3 style="color:#fff; margin-top:0;">Fizik Sabitleri & Formüller</h3>
+            <input type="text" id="physicsSearch" class="search-box" placeholder="Ara: hız, enerji, kütle..." onkeyup="searchPhysics()">
             <div id="physicsList" class="physics-list"></div>
         </div>
 
@@ -253,7 +253,7 @@
                 <input type="number" placeholder="a1" id="a1"><input type="number" placeholder="b1" id="b1"><input type="number" placeholder="c1" id="c1">
                 <input type="number" placeholder="a2" id="a2"><input type="number" placeholder="b2" id="b2"><input type="number" placeholder="c2" id="c2">
             </div>
-            <button class="action-btn" onclick="solveEquation()">脟枚z</button>
+            <button class="action-btn" onclick="solveEquation()">Çöz</button>
             <div id="eqResult" style="margin-top:20px; color:var(--alive-color); font-size:1.2rem;"></div>
         </div>
 
@@ -261,7 +261,7 @@
             <div class="camera-box">
                 <video id="aiCamera" style="display:none; width:100%; border-radius:10px;"></video>
                 <img id="aiSnapshot" style="display:none; width:100%; border-radius:10px;">
-                <div style="color:#aaa; font-size:0.9rem;">Sorunun foto臒raf谋n谋 莽ek, LifeOS 莽枚zs眉n.</div>
+                <div style="color:#aaa; font-size:0.9rem;">Sorunun fotoğrafını çek, LifeOS çözsün.</div>
                 <button class="snap-btn" id="snapBtn" onclick="captureAndSolve()"></button>
                 <button class="action-btn" id="resetCamBtn" style="display:none" onclick="resetCamera()">Yeni Soru</button>
                 <div id="aiSolution" style="text-align:left; background:#222; padding:10px; border-radius:10px; width:100%; display:none;"></div>
@@ -273,7 +273,7 @@
     <canvas id="pulseCanvas" style="display:none;" width="50" height="50"></canvas>
 
     <script>
-        // --- GLOBAL DE臑陌艦KENLER ---
+        // --- GLOBAL DEĞİŞKENLER ---
         let currentLang = "tr";
         let stepCount = 0;
         let isPedometerActive = false;
@@ -282,31 +282,31 @@
         let calcExpression = "";
         let sciExpression = "";
         
-        // Fizik veritaban谋
+        // Fizik veritabanı
         const physicsData = [
-            { name: "H谋z", formula: "v = s / t", desc: "H谋z = Yol / Zaman", unit: "m/s" },
-            { name: "陌vme", formula: "a = 螖v / t", desc: "陌vme = H谋z De臒i艧imi / Zaman", unit: "m/s虏" },
-            { name: "Kuvvet", formula: "F = m 脳 a", desc: "Newton'un 2. Yasas谋", unit: "N (Newton)" },
-            { name: "Kinetik Enerji", formula: "Ek = 陆mv虏", desc: "Hareket Enerjisi", unit: "J (Joule)" },
-            { name: "Potansiyel Enerji", formula: "Ep = mgh", desc: "Yer莽ekimi Potansiyel Enerjisi", unit: "J" },
-            { name: "陌艧", formula: "W = F 脳 s", desc: "陌艧 = Kuvvet 脳 Yol", unit: "J" },
-            { name: "G眉莽", formula: "P = W / t", desc: "G眉莽 = 陌艧 / Zaman", unit: "W (Watt)" },
-            { name: "Momentum", formula: "p = m 脳 v", desc: "Momentum = K眉tle 脳 H谋z", unit: "kg路m/s" },
-            { name: "Bas谋n莽", formula: "P = F / A", desc: "Bas谋n莽 = Kuvvet / Alan", unit: "Pa (Pascal)" },
-            { name: "Yo臒unluk", formula: "蟻 = m / V", desc: "Yo臒unluk = K眉tle / Hacim", unit: "kg/m鲁" },
-            { name: "Ohm Kanunu", formula: "V = I 脳 R", desc: "Gerilim = Ak谋m 脳 Diren莽", unit: "V (Volt)" },
-            { name: "Elektrik G眉c眉", formula: "P = V 脳 I", desc: "G眉莽 = Gerilim 脳 Ak谋m", unit: "W" },
-            { name: "I艧谋k H谋z谋", formula: "c = 299,792,458 m/s", desc: "Vakumdaki 谋艧谋k h谋z谋 sabiti", unit: "m/s" },
-            { name: "Yer莽ekimi 陌vmesi", formula: "g = 9.81 m/s虏", desc: "D眉nya y眉zeyinde yer莽ekimi ivmesi", unit: "m/s虏" },
-            { name: "Planck Sabiti", formula: "h = 6.626脳10鈦宦斥伌 J路s", desc: "Kuantum mekani臒i sabiti", unit: "J路s" },
-            { name: "Avogadro Say谋s谋", formula: "N鈧� = 6.022脳10虏鲁", desc: "1 mol'deki par莽ac谋k say谋s谋", unit: "mol鈦宦�" },
-            { name: "Gaz Sabiti", formula: "R = 8.314 J/(mol路K)", desc: "陌deal gaz sabiti", unit: "J/(mol路K)" },
-            { name: "Coulomb Kanunu", formula: "F = k(q鈧乹鈧�)/r虏", desc: "Elektriksel kuvvet", unit: "N" },
-            { name: "Dalga Denklemi", formula: "v = 位 脳 f", desc: "H谋z = Dalga Boyu 脳 Frekans", unit: "m/s" },
-            { name: "Einstein E=mc虏", formula: "E = mc虏", desc: "Enerji-K眉tle Denkli臒i", unit: "J" }
+            { name: "Hız", formula: "v = s / t", desc: "Hız = Yol / Zaman", unit: "m/s" },
+            { name: "İvme", formula: "a = Δv / t", desc: "İvme = Hız Değişimi / Zaman", unit: "m/s²" },
+            { name: "Kuvvet", formula: "F = m × a", desc: "Newton'un 2. Yasası", unit: "N (Newton)" },
+            { name: "Kinetik Enerji", formula: "Ek = ½mv²", desc: "Hareket Enerjisi", unit: "J (Joule)" },
+            { name: "Potansiyel Enerji", formula: "Ep = mgh", desc: "Yerçekimi Potansiyel Enerjisi", unit: "J" },
+            { name: "İş", formula: "W = F × s", desc: "İş = Kuvvet × Yol", unit: "J" },
+            { name: "Güç", formula: "P = W / t", desc: "Güç = İş / Zaman", unit: "W (Watt)" },
+            { name: "Momentum", formula: "p = m × v", desc: "Momentum = Kütle × Hız", unit: "kg·m/s" },
+            { name: "Basınç", formula: "P = F / A", desc: "Basınç = Kuvvet / Alan", unit: "Pa (Pascal)" },
+            { name: "Yoğunluk", formula: "ρ = m / V", desc: "Yoğunluk = Kütle / Hacim", unit: "kg/m³" },
+            { name: "Ohm Kanunu", formula: "V = I × R", desc: "Gerilim = Akım × Direnç", unit: "V (Volt)" },
+            { name: "Elektrik Gücü", formula: "P = V × I", desc: "Güç = Gerilim × Akım", unit: "W" },
+            { name: "Işık Hızı", formula: "c = 299,792,458 m/s", desc: "Vakumdaki ışık hızı sabiti", unit: "m/s" },
+            { name: "Yerçekimi İvmesi", formula: "g = 9.81 m/s²", desc: "Dünya yüzeyinde yerçekimi ivmesi", unit: "m/s²" },
+            { name: "Planck Sabiti", formula: "h = 6.626×10⁻³⁴ J·s", desc: "Kuantum mekaniği sabiti", unit: "J·s" },
+            { name: "Avogadro Sayısı", formula: "Nₐ = 6.022×10²³", desc: "1 mol'deki parçacık sayısı", unit: "mol⁻¹" },
+            { name: "Gaz Sabiti", formula: "R = 8.314 J/(mol·K)", desc: "İdeal gaz sabiti", unit: "J/(mol·K)" },
+            { name: "Coulomb Kanunu", formula: "F = k(q₁q₂)/r²", desc: "Elektriksel kuvvet", unit: "N" },
+            { name: "Dalga Denklemi", formula: "v = λ × f", desc: "Hız = Dalga Boyu × Frekans", unit: "m/s" },
+            { name: "Einstein E=mc²", formula: "E = mc²", desc: "Enerji-Kütle Denkliği", unit: "J" }
         ];
         
-        // --- BA艦LANGI脟 ---
+        // --- BAŞLANGIÇ ---
         window.onload = () => {
             if(localStorage.getItem('lifeOS_steps')) stepCount = parseInt(localStorage.getItem('lifeOS_steps'));
             document.getElementById("stepCount").innerText = stepCount;
@@ -320,7 +320,7 @@
             setDailyQuote();
         };
 
-        // --- DASHBOARD & SOHBET GE脟陌艦陌 ---
+        // --- DASHBOARD & SOHBET GEÇİŞİ ---
         function toggleChatMode() {
             const dash = document.getElementById("dashboard");
             const chat = document.getElementById("main-container");
@@ -346,7 +346,7 @@
             } else {
                 window.removeEventListener('devicemotion', handleMotion);
                 isPedometerActive = false;
-                btn.innerText = "Ba艧lat";
+                btn.innerText = "Başlat";
                 btn.classList.remove("active");
             }
         }
@@ -367,7 +367,7 @@
             lastAcc = {x:acc.x, y:acc.y, z:acc.z};
         }
 
-        // --- NABIZ 脰L脟ER ---
+        // --- NABIZ ÖLÇER ---
         async function togglePulse() {
             const btn = document.getElementById("pulseBtn");
             if(!isPulseActive) {
@@ -380,7 +380,7 @@
                     document.getElementById("pulseVideo").play();
                     pulseStream = stream;
                     isPulseActive = true;
-                    btn.innerText = "脰l莽眉l眉yor...";
+                    btn.innerText = "Ölçülüyor...";
                     btn.classList.add("active");
                     
                     analyzePulse();
@@ -393,7 +393,7 @@
         function stopPulse() {
             if(pulseStream) pulseStream.getTracks().forEach(t=>t.stop());
             isPulseActive = false;
-            document.getElementById("pulseBtn").innerText = "脰l莽";
+            document.getElementById("pulseBtn").innerText = "Ölç";
             document.getElementById("pulseBtn").classList.remove("active");
         }
 
@@ -421,7 +421,7 @@
             }
         }
 
-        // --- HESAP MAK陌NES陌 ---
+        // --- HESAP MAKİNESİ ---
         function openCalc() { document.getElementById("calcModal").style.display = "flex"; }
         function closeCalc() { document.getElementById("calcModal").style.display = "none"; }
         
@@ -440,14 +440,14 @@
             
             let keys = mode === 'basic' ? 
                 ['C', '(', ')', '/', '7', '8', '9', '*', '4', '5', '6', '-', '1', '2', '3', '+', '0', '.', '='] :
-                ['sin', 'cos', 'tan', 'log', '鈭�', 'C', '(', ')', '^', '/', '7', '8', '9', '*', '蟺', '4', '5', '6', '-', 'e', '1', '2', '3', '+', '0', '.', '='];
+                ['sin', 'cos', 'tan', 'log', '√', 'C', '(', ')', '^', '/', '7', '8', '9', '*', 'π', '4', '5', '6', '-', 'e', '1', '2', '3', '+', '0', '.', '='];
 
             keys.forEach(k => {
                 const btn = document.createElement("button");
                 btn.className = "key";
                 btn.innerText = k;
                 if(['=','+','-','*','/'].includes(k)) btn.classList.add("op");
-                if(mode === 'scientific' && ['sin','cos','tan','log','鈭�','^','蟺','e'].includes(k)) btn.classList.add("sci");
+                if(mode === 'scientific' && ['sin','cos','tan','log','√','^','π','e'].includes(k)) btn.classList.add("sci");
                 if(k === '0' && mode === 'basic') btn.classList.add("wide");
                 btn.onclick = () => pressKey(k, mode);
                 grid.appendChild(btn);
@@ -462,11 +462,11 @@
                 expr = "";
             } else if(k === '=') {
                 try {
-                    let evalExpr = expr.replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos').replace(/tan/g, 'Math.tan').replace(/log/g, 'Math.log').replace(/鈭�/g, 'Math.sqrt').replace(/\^/g, '**').replace(/蟺/g, Math.PI).replace(/e/g, Math.E);
+                    let evalExpr = expr.replace(/sin/g, 'Math.sin').replace(/cos/g, 'Math.cos').replace(/tan/g, 'Math.tan').replace(/log/g, 'Math.log').replace(/√/g, 'Math.sqrt').replace(/\^/g, '**').replace(/π/g, Math.PI).replace(/e/g, Math.E);
                     expr = eval(evalExpr).toString();
                 } catch { expr = "Hata"; }
             } else {
-                if(k === '蟺') expr += Math.PI;
+                if(k === 'π') expr += Math.PI;
                 else if(k === 'e') expr += Math.E;
                 else expr += k;
             }
@@ -477,7 +477,7 @@
             screen.innerText = expr || "0";
         }
 
-        // --- GRAF陌K 脟陌Z陌C陌 ---
+        // --- GRAFİK ÇİZİCİ ---
         function drawGraph() {
             const funcStr = document.getElementById("graphFunc").value;
             const canvas = document.getElementById("graphCanvas");
@@ -511,7 +511,7 @@
                 }
                 ctx.stroke();
             } catch(e) {
-                alert('Ge莽ersiz fonksiyon');
+                alert('Geçersiz fonksiyon');
             }
         }
 
@@ -600,7 +600,7 @@
                 } else if(op === 'inverse') {
                     const det = calculateDeterminant(A);
                     if(Math.abs(det) < 0.0001) {
-                        alert('Matris tersi al谋namaz (determinant = 0)');
+                        alert('Matris tersi alınamaz (determinant = 0)');
                         return;
                     }
                     result = calculateInverse(A);
@@ -608,7 +608,7 @@
                 
                 displayMatrix(result);
             } catch(e) {
-                alert('陌艧lem hatas谋: ' + e.message);
+                alert('İşlem hatası: ' + e.message);
             }
         }
 
@@ -643,7 +643,7 @@
             return adj.map(row => row.map(val => val / det));
         }
 
-        // --- F陌Z陌K SAB陌TLER陌 ---
+        // --- FİZİK SABİTLERİ ---
         function loadPhysicsData() {
             const list = document.getElementById("physicsList");
             list.innerHTML = '';
@@ -652,7 +652,7 @@
                 div.className = 'physics-item';
                 div.innerHTML = `
                     <h4>${item.name}</h4>
-                    <p><strong>Form眉l:</strong> ${item.formula}</p>
+                    <p><strong>Formül:</strong> ${item.formula}</p>
                     <p>${item.desc}</p>
                     <p style="color:#666; font-size:0.8rem;">Birim: ${item.unit}</p>
                 `;
@@ -676,7 +676,7 @@
                 div.className = 'physics-item';
                 div.innerHTML = `
                     <h4>${item.name}</h4>
-                    <p><strong>Form眉l:</strong> ${item.formula}</p>
+                    <p><strong>Formül:</strong> ${item.formula}</p>
                     <p>${item.desc}</p>
                     <p style="color:#666; font-size:0.8rem;">Birim: ${item.unit}</p>
                 `;
@@ -684,7 +684,7 @@
             });
         }
 
-        // --- DENKLEM 脟脰Z脺C脺 ---
+        // --- DENKLEM ÇÖZÜCÜ ---
         function solveEquation() {
             const a1 = parseFloat(document.getElementById("a1").value);
             const b1 = parseFloat(document.getElementById("b1").value);
@@ -695,7 +695,7 @@
             
             const det = a1*b2 - a2*b1;
             if(det === 0) { 
-                document.getElementById("eqResult").innerText = "脟枚z眉m Yok"; 
+                document.getElementById("eqResult").innerText = "Çözüm Yok"; 
                 return; 
             }
             const x = (c1*b2 - c2*b1) / det;
@@ -716,7 +716,7 @@
                 document.getElementById("resetCamBtn").style.display = "none";
                 document.getElementById("aiSnapshot").style.display = "none";
                 document.getElementById("aiSolution").style.display = "none";
-            } catch(e) { alert("Kamera a莽谋lamad谋."); }
+            } catch(e) { alert("Kamera açılamadı."); }
         }
 
         function captureAndSolve() {
@@ -739,7 +739,7 @@
         async function solveWithGemini(base64Img) {
             const resultDiv = document.getElementById("aiSolution");
             resultDiv.style.display = "block";
-            resultDiv.innerText = "LifeOS d眉艧眉n眉yor... 馃";
+            resultDiv.innerText = "LifeOS düşünüyor... 🧠";
             document.getElementById("snapBtn").style.display = "none";
             
             try {
@@ -747,7 +747,7 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ 
-                        question: "Bu matematik problemini veya soruyu ad谋m ad谋m 莽枚z.", 
+                        question: "Bu matematik problemini veya soruyu adım adım çöz.", 
                         image: base64Img,
                         context: "AI Kamera Modu"
                     })
@@ -756,7 +756,7 @@
                 resultDiv.innerHTML = data.answer.replace(/\n/g, "<br>");
                 document.getElementById("resetCamBtn").style.display = "inline-block";
             } catch(e) {
-                resultDiv.innerText = "Ba臒lant谋 hatas谋.";
+                resultDiv.innerText = "Bağlantı hatası.";
                 document.getElementById("resetCamBtn").style.display = "inline-block";
             }
         }
@@ -784,7 +784,7 @@
             try {
                 const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
                 const d = await r.json();
-                document.getElementById("temp").innerText = Math.round(d.current_weather.temperature) + "掳";
+                document.getElementById("temp").innerText = Math.round(d.current_weather.temperature) + "°";
             } catch {}
         }
 
@@ -795,7 +795,7 @@
                 const r = await fetch(apiUrl); 
                 const d = await r.json();
                 if(d.items) document.getElementById("newsText").innerText = d.items.map(i=>i.title).join("  +++  ");
-            } catch { document.getElementById("newsText").innerText = "Haber ak谋艧谋 al谋namad谋."; }
+            } catch { document.getElementById("newsText").innerText = "Haber akışı alınamadı."; }
         }
 
         function updateDate() {
@@ -806,7 +806,7 @@
         }
 
         function setDailyQuote() {
-            const quotes = ["Yolun sonu de臒il, yolda艧谋n kim oldu臒u 枚nemlidir.", "Bilgi payla艧t谋k莽a 莽o臒al谋r.", "Her g眉n yeni bir ba艧lang谋莽t谋r."];
+            const quotes = ["Yolun sonu değil, yoldaşın kim olduğu önemlidir.", "Bilgi paylaştıkça çoğalır.", "Her gün yeni bir başlangıçtır."];
             const now = new Date();
             document.getElementById("dailyQuote").innerText = quotes[now.getDate() % 3];
         }
@@ -866,7 +866,7 @@
         }
 
         function clearData() {
-            if(confirm('T眉m veriler silinecek. Emin misiniz?')) {
+            if(confirm('Tüm veriler silinecek. Emin misiniz?')) {
                 localStorage.clear();
                 stepCount = 0;
                 document.getElementById('stepCount').innerText = '0';
