@@ -18,14 +18,15 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
 
-        /* RTL */
+        /* RTL SUPPORT (Farsça İçin) */
         body.rtl { direction: rtl; }
-        body.rtl .sidebar { left: auto; right: -260px; border-left: 1px solid var(--active-color); }
+        body.rtl .sidebar { left: auto; right: -260px; border-left: 1px solid var(--active-color); border-right: none; }
         body.rtl .sidebar.open { right: 0; }
         body.rtl .chat-bubble { text-align: right; border-left: none; border-right: 3px solid var(--alive-color); }
         body.rtl .chat-bubble.user { text-align: right; border-right: none; border-left: 3px solid var(--active-color); }
         body.rtl input { text-align: right; }
         body.rtl .status-area { text-align: left; }
+        body.rtl .live-badge { justify-content: flex-start; }
 
         /* HEADER */
         header { padding: 10px 15px; background: rgba(17,17,17,0.95); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; height: 60px; flex-shrink: 0; z-index: 100; }
@@ -50,6 +51,13 @@
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .action-btn { width: 100%; background: #333; color: #fff; border: none; padding: 8px; border-radius: 8px; margin-top: 5px; cursor: pointer; }
         .action-btn.active { background: var(--active-color); animation: pulse 1s infinite; }
+
+        /* SIDEBAR & MENU ITEMS */
+        .sidebar { position: fixed; top: 0; left: -260px; width: 260px; height: 100%; background: #151515; z-index: 3000; transition: 0.3s; display: flex; flex-direction: column; border-right: 1px solid var(--active-color); }
+        .sidebar.open { left: 0; }
+        .menu-item { padding: 12px 15px; border-bottom: 1px solid #222; cursor: pointer; display: flex; gap: 10px; align-items: center; color: #ccc; transition: 0.2s; }
+        .menu-item:hover { background: #222; color: #fff; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2500; display: none; }
 
         /* SUPER CALCULATOR MODAL */
         #calcModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; flex-direction: column; }
@@ -100,11 +108,6 @@
         .input-area { background: var(--bg-color); padding: 10px; border-top: 1px solid #333; display: flex; gap: 10px; align-items: center; }
         input[type="text"] { flex: 1; padding: 12px; border-radius: 25px; border: 1px solid #333; background: #111; color: #fff; outline: none; }
         
-        /* SIDEBAR */
-        .sidebar { position: fixed; top: 0; left: -260px; width: 260px; height: 100%; background: #151515; z-index: 3000; transition: 0.3s; display: flex; flex-direction: column; border-right: 1px solid var(--active-color); }
-        .sidebar.open { left: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2500; display: none; }
-
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
     </style>
 </head>
@@ -112,7 +115,21 @@
 
     <div class="sidebar" id="sidebar">
         <div style="padding:20px; color:var(--alive-color); font-weight:bold; border-bottom:1px solid #333;">LifeOS Menü</div>
+        
+        <div style="padding:10px; color:#666; font-size:0.75rem; border-top:1px solid #333; margin-top:0;">EĞİTİM</div>
+        <div class="menu-item" onclick="startLesson('Almanca')">
+            <span>🇩🇪</span> <span id="txtDE">Almanca Öğren</span>
+        </div>
+        <div class="menu-item" onclick="startLesson('İngilizce')">
+            <span>🇬🇧</span> <span id="txtEN">İngilizce Öğren</span>
+        </div>
+        <div class="menu-item" onclick="startLesson('Farsça')">
+            <span>🇮🇷</span> <span id="txtFA">Farsça Öğren</span>
+        </div>
+
+        <div style="padding:10px; color:#666; font-size:0.75rem; border-top:1px solid #333; margin-top:10px;">GEÇMİŞ</div>
         <div id="historyList" style="flex:1; overflow-y:auto;"></div>
+        
         <div style="padding:15px;"><button onclick="clearData()" style="width:100%; padding:10px; background:#333; color:red; border:none; border-radius:5px;">🗑️ Sıfırla</button></div>
     </div>
     <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
@@ -122,6 +139,8 @@
             <button class="btn-small" onclick="toggleMenu()">☰</button>
             <button class="btn-small" onclick="toggleChatMode()">💬 Sohbet</button>
         </div>
+        <button class="btn-small" onclick="toggleLang()" style="border:1px solid var(--accent-color); color:var(--accent-color)">TR | FA</button>
+        
         <div class="status-area">
             <div id="greeting">...</div>
             <div class="live-badge" id="locBadge"><span class="dot"></span> <span id="locText">Konum...</span></div>
@@ -136,7 +155,7 @@
         <div class="card">
             <div class="card-row">
                 <div>
-                    <div class="card-title">HAVA DURUMU</div>
+                    <div class="card-title" id="lblWeather">HAVA DURUMU</div>
                     <div class="card-value" id="temp">--°</div>
                     <div style="font-size:0.8rem; color:#aaa;" id="dateDisplay">...</div>
                 </div>
@@ -146,13 +165,13 @@
 
         <div class="grid-2">
             <div class="card">
-                <div class="card-title">ADIM</div>
+                <div class="card-title" id="lblStep">ADIM</div>
                 <div class="card-value" id="stepCount">0</div>
                 <div style="font-size:0.7rem; color:#888;"><span id="calCount">0</span> kcal | <span id="distCount">0</span> m</div>
                 <button class="action-btn" id="stepBtn" onclick="togglePedometer()">▶ Başlat</button>
             </div>
             <div class="card">
-                <div class="card-title">NABIZ</div>
+                <div class="card-title" id="lblPulse">NABIZ</div>
                 <div class="card-value" id="bpmValue" style="color:var(--active-color)">--</div>
                 <button class="action-btn" id="pulseBtn" onclick="togglePulse()">❤ Ölç</button>
             </div>
@@ -800,9 +819,13 @@
 
         function updateDate() {
             const now = new Date();
-            const miladi = now.toLocaleDateString('tr-TR', {day:'numeric', month:'long'});
-            const shamsiYear = now.getFullYear() - 621; 
-            document.getElementById("dateDisplay").innerText = `${miladi} (${shamsiYear})`;
+            if(currentLang === 'fa') {
+                const shamsiYear = now.getFullYear() - 621;
+                document.getElementById("dateDisplay").innerText = `سال ${shamsiYear}`;
+            } else {
+                const miladi = now.toLocaleDateString('tr-TR', {day:'numeric', month:'long'});
+                document.getElementById("dateDisplay").innerText = miladi;
+            }
         }
 
         function setDailyQuote() {
@@ -857,7 +880,7 @@
         
         function startVoice() {
             const r = new (window.SpeechRecognition||window.webkitSpeechRecognition)();
-            r.lang = 'tr-TR';
+            r.lang = currentLang === 'fa' ? 'fa-IR' : 'tr-TR';
             r.start();
             r.onresult = e => {
                 document.getElementById("userInput").value = e.results[0][0].transcript;
@@ -874,6 +897,63 @@
                 document.getElementById('distCount').innerText = '0';
                 alert('Veriler temizlendi');
             }
+        }
+
+        // --- YENİ EKLENEN ÖĞRETMEN VE DİL FONKSİYONLARI ---
+
+        function startLesson(lang) {
+            toggleMenu(); 
+            const dash = document.getElementById("dashboard");
+            const chat = document.getElementById("main-container");
+            if (dash.style.display !== "none") {
+                dash.style.display = "none";
+                chat.style.display = "flex";
+            }
+
+            const userMsg = lang === 'Farsça' ? `می‌خواهم فارسی یاد بگیرم` : `${lang} öğrenmek istiyorum`;
+            addBubble(`📚 ${userMsg}...`, 'user');
+
+            const prompt = `Ben ${lang} öğrenmek istiyorum. Lütfen bir öğretmen gibi davran. Seviyemi sor ve ders planı yap.`;
+            
+            fetch("/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    question: prompt, 
+                    context: "Eğitim Modu" 
+                })
+            })
+            .then(r => r.json())
+            .then(d => addBubble(d.answer, 'bot'))
+            .catch(() => addBubble("Bağlantı hatası (Eğitim Modu).", 'bot'));
+        }
+
+        function toggleLang() {
+            currentLang = currentLang === 'tr' ? 'fa' : 'tr';
+            
+            if (currentLang === 'fa') {
+                document.body.classList.add('rtl');
+                document.getElementById('userInput').placeholder = 'پیام بنویسید...';
+            } else {
+                document.body.classList.remove('rtl');
+                document.getElementById('userInput').placeholder = 'Mesaj yaz...';
+            }
+
+            const tr = currentLang === 'tr';
+            const setTxt = (id, text) => {
+                const el = document.getElementById(id);
+                if(el) el.innerText = text;
+            };
+
+            setTxt('lblWeather', tr ? 'HAVA DURUMU' : 'آب و هوا');
+            setTxt('lblStep', tr ? 'ADIM' : 'گام');
+            setTxt('lblPulse', tr ? 'NABIZ' : 'ضربان قلب');
+            
+            setTxt('txtDE', tr ? 'Almanca Öğren' : 'آموزش آلمانی');
+            setTxt('txtEN', tr ? 'İngilizce Öğren' : 'آموزش انگلیسی');
+            setTxt('txtFA', tr ? 'Farsça Öğren' : 'آموزش فارسی');
+            
+            updateDate(); 
         }
     </script>
 </body>
