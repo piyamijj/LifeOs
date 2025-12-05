@@ -197,6 +197,8 @@
 
     <div class="input-area" id="inputArea">
         <button class="btn-small" onclick="startVoice()">🎙️</button>
+        <button class="btn-small" onclick="document.getElementById('chatFileInput').click()">📎</button>
+        <input type="file" id="chatFileInput" accept="*/*" style="display:none" onchange="handleChatFile(event)">
         <input type="text" id="userInput" placeholder="Mesaj yaz..." onkeypress="if(event.key==='Enter') sendMessage()">
         <button class="btn-small" style="background:var(--alive-color); color:#000;" onclick="sendMessage()">➤</button>
     </div>
@@ -281,6 +283,12 @@
                 <video id="aiCamera" style="display:none; width:100%; border-radius:10px;"></video>
                 <img id="aiSnapshot" style="display:none; width:100%; border-radius:10px;">
                 <div style="color:#aaa; font-size:0.9rem;">Sorunun fotoğrafını çek, LifeOS çözsün.</div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="action-btn" onclick="document.getElementById('galleryInput').click()">📁 Galeriden Seç</button>
+                    <button class="action-btn" onclick="document.getElementById('fileInput').click()">📄 Dosya Yükle</button>
+                </div>
+                <input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
+                <input type="file" id="fileInput" accept="*/*" style="display:none" onchange="handleFileUpload(event)">
                 <button class="snap-btn" id="snapBtn" onclick="captureAndSolve()"></button>
                 <button class="action-btn" id="resetCamBtn" style="display:none" onclick="resetCamera()">Yeni Soru</button>
                 <div id="aiSolution" style="text-align:left; background:#222; padding:10px; border-radius:10px; width:100%; display:none;"></div>
@@ -752,22 +760,85 @@
             
             if(aiStream) aiStream.getTracks().forEach(t=>t.stop());
             
-            solveWithGemini(imgData);
+            solveWithGemini(imgData, null, null);
         }
 
-        async function solveWithGemini(base64Img) {
-            const resultDiv = document.getElementById("aiSolution");
-            resultDiv.style.display = "block";
-            resultDiv.innerText = "LifeOS düşünüyor... 🧠";
-            document.getElementById("snapBtn").style.display = "none";
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                const fileName = file.name;
+                const fileType = file.type;
+                
+                if (file.type.startsWith('image/')) {
+                    document.getElementById("aiSnapshot").src = base64Data;
+                    document.getElementById("aiSnapshot").style.display = "block";
+                    document.getElementById("aiCamera").style.display = "none";
+                    if(aiStream) aiStream.getTracks().forEach(t=>t.stop());
+                }
+                
+                solveWithGemini(base64Data, fileName, fileType);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleChatFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                const fileName = file.name;
+                const fileType = file.type;
+                
+                sendFileToAI(base64Data, fileName, fileType);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function sendFileToAI(base64Data, fileName, fileType) {
+            toggleChatMode();
+            addBubble(`📎 ${fileName} gönderildi`, 'user');
             
             try {
                 const res = await fetch("/ask", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ 
-                        question: "Bu matematik problemini veya soruyu adım adım çöz.", 
+                        question: `Bu dosyayı analiz et: ${fileName}`,
+                        image: base64Data,
+                        fileName: fileName,
+                        fileType: fileType,
+                        context: "Dosya Analizi"
+                    })
+                });
+                const data = await res.json();
+                addBubble(data.answer, 'bot');
+            } catch(e) {
+                addBubble("Dosya gönderilemedi.", 'bot');
+            }
+        }
+
+        async function solveWithGemini(base64Img, fileName, fileType) {
+            const resultDiv = document.getElementById("aiSolution");
+            resultDiv.style.display = "block";
+            resultDiv.innerText = "LifeOS düşünüyor... 🧠";
+            document.getElementById("snapBtn").style.display = "none";
+            
+            try {
+                const questionText = fileName ? `Bu dosyayı analiz et: ${fileName}` : "Bu matematik problemini veya soruyu adım adım çöz.";
+                const res = await fetch("/ask", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        question: questionText,
                         image: base64Img,
+                        fileName: fileName,
+                        fileType: fileType,
                         context: "AI Kamera Modu"
                     })
                 });
